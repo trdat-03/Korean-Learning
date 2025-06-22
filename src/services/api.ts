@@ -1,0 +1,59 @@
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add a request interceptor for authentication
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Handle unauthorized access
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export interface TestResultResponse {
+  currentScore: number;
+  previousScore: number | null;
+  feedbackMessage: string;
+  lastFiveResults: {
+    lessonId: string;
+    scorePercentage: number;
+    testDate: string;
+  }[];
+}
+
+export const submitTestResult = async (
+  userId: string,
+  lessonId: string,
+  scorePercentage: number
+): Promise<TestResultResponse> => {
+  const response = await api.post(
+    `/test-results/submit-with-feedback?userId=${userId}&lessonId=${lessonId}&scorePercentage=${scorePercentage}`
+  );
+  return response.data;
+};
+
+export default api; 
