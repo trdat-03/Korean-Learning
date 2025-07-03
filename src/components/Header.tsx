@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
-import { Route } from "@/constant/route";
+import { ROUTES } from "@/constant/route";
 import { AuthService } from "@/utils/AuthService";
 import { useLogout } from "./useLogout";
 import axios from "axios";
@@ -130,6 +130,8 @@ export const Header = () => {
           <a href="#testimonials" className="text-gray-700 hover:text-red-600 transition-colors">Đánh giá</a>
           <a href="#contact" className="text-gray-700 hover:text-red-600 transition-colors">Liên hệ</a>
           <a href="/chat-topics"  className="text-gray-700 hover:text-red-600 transition-colors">Đối thoại</a>
+          <a href="/flashcards"  className="text-gray-700 hover:text-red-600 transition-colors">Flashcard</a>
+           <a href="/subscription"  className="text-gray-700 hover:text-red-600 transition-colors">Nâng cấp</a>
         </nav>
 
         {/* Desktop Actions */}
@@ -163,11 +165,11 @@ export const Header = () => {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" className="text-gray-700" onClick={() => nav(Route.LOGIN)}>
+              <Button variant="ghost" className="text-gray-700" onClick={() => nav(ROUTES.LOGIN)}>
                 <User className="w-4 h-4 mr-2" />
                 Đăng nhập
               </Button>
-              <Button className="bg-red-600 hover:bg-red-700" onClick={() => nav(Route.REGISTER)}>
+              <Button className="bg-red-600 hover:bg-red-700" onClick={() => nav(ROUTES.REGISTER)}>
                 Đăng ký ngay
               </Button>
             </>
@@ -188,6 +190,7 @@ export const Header = () => {
             <a href="#features" className="text-gray-700 hover:text-red-600 transition-colors">Tính năng</a>
             <a href="#testimonials" className="text-gray-700 hover:text-red-600 transition-colors">Đánh giá</a>
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition-colors">Liên hệ</a>
+
             <div className="pt-4 border-t border-red-100 flex flex-col space-y-2">
               {isAuthenticated ? (
                 <>
@@ -201,10 +204,10 @@ export const Header = () => {
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" className="justify-start" onClick={() => nav(Route.LOGIN)}>
+                  <Button variant="ghost" className="justify-start" onClick={() => nav(ROUTES.LOGIN)}>
                     <User className="w-4 h-4 mr-2" />Đăng nhập
                   </Button>
-                  <Button className="bg-red-600 hover:bg-red-700" onClick={() => nav(Route.REGISTER)}>Đăng ký ngay</Button>
+                  <Button className="bg-red-600 hover:bg-red-700" onClick={() => nav(ROUTES.REGISTER)}>Đăng ký ngay</Button>
                 </>
               )}
             </div>

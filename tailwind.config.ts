@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+import { type Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -8,7 +9,6 @@ export default {
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
-	prefix: "",
 	theme: {
 		container: {
 			center: true,
@@ -89,8 +89,20 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			perspective: {
+				'1000': '1000px',
+			},
+			rotate: {
+				'y-180': 'rotateY(180deg)',
+			},
+			transformStyle: {
+				'preserve-3d': 'preserve-3d',
+			},
+			backfaceVisibility: {
+				'hidden': 'hidden',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [animate],
 } satisfies Config;

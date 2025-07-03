@@ -1,8 +1,7 @@
 export interface Message {
   id: string;
   content: string;
-  translation?: string;
-  sender: 'user' | 'bot';
+  senderType: 'USER' | 'AI';
   timestamp: Date;
 }
 
@@ -24,8 +23,6 @@ export interface ChatTopic {
 export interface MessageResponse {
   id: string;
   content: string;
-  translation?: string;
-  sender?: 'user' | 'bot';
   senderType: 'USER' | 'AI';
   timestamp: string;
   createdAt: string;

@@ -14,12 +14,13 @@ export const chatService = {
   },
 
   // Send message
-  sendMessage: async (conversationId: string, content: string, needsCorrection = false): Promise<MessageResponse> => {
+  sendMessage: async (conversationId: string, content: string, userId: string, needsCorrection = false): Promise<MessageResponse> => {
     try {
       const response = await api.post(`/chat/conversations/${conversationId}/messages`, {
         content,
+        userId,
         needsCorrection,
-        senderType: 'USER' // Use API's USER type instead of user
+        senderType: 'USER' 
       });
       console.log('API Response:', response.data);
       return response.data;
