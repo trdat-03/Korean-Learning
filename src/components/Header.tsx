@@ -1,6 +1,6 @@
 // Header.tsx
 import { Button } from "@/components/ui/button";
-import { BookOpen, User, Menu } from "lucide-react";
+import { BookOpen, User, Menu, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
   NavigationMenu,
@@ -159,6 +159,12 @@ export const Header = () => {
                     <span>Quản lý tài khoản</span>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/certificates">
+                    <Award className="mr-2 h-4 w-4" />
+                    <span>Danh sách chứng chỉ</span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>
@@ -198,6 +204,12 @@ export const Header = () => {
                     <Button variant="ghost" className="justify-start w-full">
                       <User className="w-4 h-4 mr-2" />
                       Quản lý tài khoản
+                    </Button>
+                  </Link>
+                  <Link to="/certificates">
+                    <Button variant="ghost" className="justify-start w-full">
+                      <Award className="w-4 h-4 mr-2" />
+                      Danh sách chứng chỉ
                     </Button>
                   </Link>
                   <Button variant="ghost" onClick={logout} className="justify-start w-full">Đăng xuất</Button>

@@ -9,6 +9,7 @@
     Video,
     Settings,
     CreditCard,
+    MessageCircle,
     LogOut,
     Menu,
     X,
@@ -29,6 +30,11 @@
         name: "Tổng quan",
         href: "/admin",
         icon: LayoutDashboard,
+      },
+      {
+        name: "Chat",
+        href: "/admin/chat",
+        icon: MessageCircle,
       },
       {
         name: "Khóa học",

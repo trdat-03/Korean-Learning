@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ChatTopic } from "@/types/chat";
+import type { ChatTopic } from "@/types/conversation";
 
 interface TopicCardProps {
   topic: ChatTopic;

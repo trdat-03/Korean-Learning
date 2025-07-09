@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Certificate Toast Styling */
+.certificate-toast {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  border: 2px solid #d97706;
+  color: white;
+  font-weight: 500;
+}
+
+.certificate-toast .Toastify__toast-body {
+  padding: 1rem;
+}
+
+.certificate-toast .Toastify__toast-icon {
+  color: white;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -124,4 +140,27 @@
 
 .flashcard-back {
   transform: rotateY(180deg);
+}
+
+/* Custom scrollbar cho chat */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-red-300::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thumb-red-300::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.scrollbar-thumb-red-300::-webkit-scrollbar-thumb {
+  background: #fca5a5;
+  border-radius: 3px;
+}
+
+.scrollbar-thumb-red-300::-webkit-scrollbar-thumb:hover {
+  background: #f87171;
 } 

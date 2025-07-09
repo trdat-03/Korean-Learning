@@ -2,12 +2,19 @@ export const ROUTES = {
   // Auth Routes
   LOGIN: "/login",
   REGISTER: "/register",
+  ACCOUNT_VERIFICATION: "/account-verification",
+  FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_RESET_CODE: "/verify-reset-code",
+  RESET_PASSWORD: "/reset-password",
 
   // Public Routes
   HOME: "/",
   COURSES: "/courses",
   COURSE_DETAIL: "/courses/:id",
   COURSE_LEARN: "/courses/:id/learn",
+  QUIZ_ATTEMPT: "/quiz/:quizId/attempt",
+  QUIZ_RESULT: "/quiz/:quizId/result",
+  CERTIFICATES: "/certificates",
   PRACTICE: "/practice/:lessonId",
   VOCABULARY_MATCHING: "/matching/:lessonId",
   

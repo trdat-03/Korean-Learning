@@ -5,7 +5,7 @@ interface AlertAiUsageCountProps {
 }
 
 export function AlertAiUsageCount({ aiUsageCount }: AlertAiUsageCountProps) {
-  const isUnlimited = aiUsageCount === -1;
+  const isUnlimited = aiUsageCount === 99;
   return (
     <Alert
       className={`mt-2 px-3 py-2 border ${

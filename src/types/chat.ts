@@ -1,40 +1,43 @@
-export interface Message {
-  id: string;
-  content: string;
-  senderType: 'USER' | 'AI';
-  timestamp: Date;
-}
-
-export interface Conversation {
-  id: string;
-  topic: string;
-  messages: Message[];
-  roleScenario?: string;
-}
-
-export interface ChatTopic {
-  id: string;
-  displayName: string;
-  description: string;
-  imageUrl: string;
-  prompt: string;
-}
-
-export interface MessageResponse {
-  id: string;
-  content: string;
-  senderType: 'USER' | 'AI';
-  timestamp: string;
+export interface ChatSession {
+  chatId: string;
+  userId: number;
+  adminId: number;
+  status: 'active' | 'closed';
   createdAt: string;
-  correctionFeedback: string | null;
+  lastMessage?: string;
+  lastMessageTime?: number;
 }
 
-export interface ConversationResponse {
+export interface ChatMessage {
   id: string;
-  topic: string;
-  messages: MessageResponse[];
-  roleScenario?: string;
-  userId: string;
-  createdAt: string;
-  isActive: boolean;
-} 
+  senderId: string;
+  senderType: 'user' | 'ADMIN' | 'STUDENT';
+  content: string;
+  timestamp: number;
+  isRead: boolean;
+}
+
+export interface CreateChatRequest {
+  userId: number;
+  adminId: number;
+}
+
+export interface CreateChatResponse {
+  chatId: string;
+}
+
+export interface ChatState {
+  isOpen: boolean;
+  currentChatId: string | null;
+  messages: ChatMessage[];
+  unreadCount: number;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'user' | 'ADMIN' | 'STUDENT';
+}

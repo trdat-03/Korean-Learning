@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { TopicCard } from "@/features/chat/components/TopicCard";
-import { useChatTopics } from "@/hooks/features/chat/useChatTopics";
+import { useChatTopics } from "@/hooks/features/conversation/useChatTopics";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const ChatTopicsPage = () => {

@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import {AuthService} from "@/utils/AuthService";
+import { ROUTES } from "@/constant/route";
 
 import type { UserDTO } from "@/models/User";
 
@@ -145,7 +146,7 @@ export default function LoginPage() {
                   </Label>
                 </div>
                 <Link
-                  to="/forgot-password"
+                  to={ROUTES.FORGOT_PASSWORD}
                   className="text-sm text-red-600 hover:text-red-700 hover:underline"
                 >
                   Quên mật khẩu?

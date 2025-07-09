@@ -13,9 +13,12 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, Phone } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegister } from "@/hooks/useAccountVerification";
+import { ROUTES } from "@/constant/route";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -24,35 +27,37 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
+
+  const { register, isLoading, error, success } = useRegister();
 
   const validateForm = () => {
     if (!name.trim()) {
-      setError("Vui lòng nhập họ tên");
+      setFormError("Vui lòng nhập họ tên");
       return false;
     }
     if (!email.trim()) {
-      setError("Vui lòng nhập email");
+      setFormError("Vui lòng nhập email");
       return false;
     }
     if (!email.includes("@")) {
-      setError("Email không hợp lệ");
+      setFormError("Email không hợp lệ");
       return false;
     }
     if (!phone.trim()) {
-      setError("Vui lòng nhập số điện thoại");
+      setFormError("Vui lòng nhập số điện thoại");
       return false;
     }
     if (password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự");
+      setFormError("Mật khẩu phải có ít nhất 6 ký tự");
       return false;
     }
     if (password !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
+      setFormError("Mật khẩu xác nhận không khớp");
       return false;
     }
     if (!agreeTerms) {
-      setError("Vui lòng đồng ý với điều khoản sử dụng");
+      setFormError("Vui lòng đồng ý với điều khoản sử dụng");
       return false;
     }
     return true;
@@ -60,38 +65,25 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setFormError("");
 
     if (!validateForm()) {
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:8080/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName: name,
-          email,
-          phone,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        alert("Đăng ký thành công!");
-        window.location.href = "/login";
-      } else {
-        const data = await response.json();
-        setError(data.message || "Đăng ký thất bại!");
-      }
-    } catch (error) {
-      console.error(error);
-      setError("Lỗi kết nối server!");
-    }
+    await register({
+      fullName: name,
+      email,
+      phone,
+      password,
+    });
   };
+
+  // Redirect to verification page on success
+  if (success) {
+    navigate(`${ROUTES.ACCOUNT_VERIFICATION}?email=${encodeURIComponent(email)}&fullName=${encodeURIComponent(name)}`);
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 p-4">
@@ -106,14 +98,14 @@ export default function RegisterPage() {
                 Tạo tài khoản mới
               </CardTitle>
               <p className="text-gray-600 mt-2">
-                Đăng ký để bắt đầu hành trình học tập
+                Nhập thông tin để nhận mã xác thực
               </p>
             </div>
           </CardHeader>
           <CardContent>
-            {error && (
+            {(formError || error) && (
               <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-md text-sm">
-                {error}
+                {formError || error}
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -268,8 +260,9 @@ export default function RegisterPage() {
               <Button
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5"
+                disabled={isLoading}
               >
-                Đăng ký
+                {isLoading ? "Đang gửi..." : "Gửi mã xác thực"}
               </Button>
             </form>
             {/* Login Link */}
@@ -277,7 +270,7 @@ export default function RegisterPage() {
               <p className="text-sm text-gray-600">
                 Đã có tài khoản?{" "}
                 <Link
-                  to="/login"
+                  to={ROUTES.LOGIN}
                   className="text-red-600 hover:text-red-700 font-medium hover:underline"
                 >
                   Đăng nhập ngay

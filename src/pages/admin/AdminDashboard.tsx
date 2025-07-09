@@ -1,6 +1,7 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Users, ClipboardList, TrendingUp } from "lucide-react";
+import { BookOpen, Users, ClipboardList, TrendingUp, MessageCircle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
   const statsData = [
@@ -110,6 +111,37 @@ export default function AdminDashboard() {
 
         {/* Recent Activities */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+          {/* Chat Quick Access */}
+          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg flex items-center">
+                <MessageCircle className="w-5 h-5 mr-2 text-blue-600" />
+                Chat Support
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-gray-600">
+                  Quản lý tin nhắn và hỗ trợ học sinh
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm">
+                    <span className="font-medium text-gray-900">3 tin nhắn mới</span>
+                    <br />
+                    <span className="text-gray-500">Cần phản hồi</span>
+                  </div>
+                  <Link
+                    to="/admin/chat"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                  >
+                    Mở Chat Console
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Hoạt động gần đây</CardTitle>
@@ -132,7 +164,10 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </div>
 
+        {/* Bottom row */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Khóa học phổ biến</CardTitle>
@@ -147,6 +182,29 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Placeholder for future feature */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg">Thống kê nhanh</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Bài tập đã chấm</span>
+                  <span className="text-sm text-gray-500">156</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Phản hồi chat</span>
+                  <span className="text-sm text-gray-500">42</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Đánh giá 5 sao</span>
+                  <span className="text-sm text-gray-500">28</span>
+                </div>
               </div>
             </CardContent>
           </Card>

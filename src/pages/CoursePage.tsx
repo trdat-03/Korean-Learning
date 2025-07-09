@@ -5,6 +5,7 @@ import { EnrollDialog } from "@/components/EnrollDialog";
 import { LoginPromptDialog } from "@/components/LoginPromptDialog";
 import { CourseContent } from "@/components/features/course/CourseContent";
 import { CourseEnrollCard } from "@/components/features/course/CourseEnrollCard";
+import { QuizSection } from "@/components/features/quiz/QuizSection";
 import { useCourse } from "@/hooks/features/course/useCourse";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -47,6 +48,14 @@ const Course: React.FC = () => {
             <h1 className="text-4xl font-extrabold mb-4">{course.title}</h1>
             <p className="text-gray-700 mb-6">{course.description}</p>
             <CourseContent course={course} />
+            
+            {/* Quiz Section */}
+            <div className="mt-8">
+              <QuizSection
+                courseId={course.id}
+                courseTitle={course.title}
+              />
+            </div>
           </div>
 
           <div className="w-full lg:w-[350px] flex-shrink-0">
