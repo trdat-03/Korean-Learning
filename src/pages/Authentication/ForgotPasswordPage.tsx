@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForgotPassword } from "@/hooks/usePasswordReset";
+import { useForgotPassword } from "@/hooks/authentication/usePasswordReset";
 import { ROUTES } from "@/constant/route";
 
 export default function ForgotPasswordPage() {

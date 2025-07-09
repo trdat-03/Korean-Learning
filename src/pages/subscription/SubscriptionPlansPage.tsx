@@ -1,6 +1,6 @@
-import { useSubscription } from '@/hooks/features/subscription/useSubscription';
-import { SubscriptionLoadingSpinner } from '@/components/features/subscription/SubscriptionLoadingSpinner';
-import { SubscriptionPageContent } from '@/components/features/subscription/SubscriptionPageContent';
+import { useSubscription } from '@/hooks/subscription/useSubscription';
+import { SubscriptionLoadingSpinner } from '@/components/subscription/SubscriptionLoadingSpinner';
+import { SubscriptionPageContent } from '@/components/subscription/SubscriptionPageContent';
 import { Header } from '@/components/Header';
 
 export default function SubscriptionPlansPage() {

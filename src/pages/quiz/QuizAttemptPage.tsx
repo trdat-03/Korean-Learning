@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { QuizAttemptQuestionComponent } from '@/components/features/quiz/QuizAttemptQuestion';
+import { QuizAttemptQuestionComponent } from '@/components/quiz/QuizAttemptQuestion';
 import { Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import type { QuizResponse, QuizAttempt, QuizAttemptQuestion } from '@/types/quiz';
 

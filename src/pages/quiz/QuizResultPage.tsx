@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CertificateNotification } from '@/components/features/certificate/CertificateNotification';
+import { CertificateNotification } from '@/components/certificate/CertificateNotification';
 import { Clock, Trophy, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
-import { useCertificate } from '@/hooks/features/certificate/useCertificate';
-import { useUser } from '@/hooks/useUser';
+import { useCertificate } from '@/hooks/certificate/useCertificate';
+import { useUser } from '@/hooks/authentication/useUser';
 import type { QuizResponse, QuizResult } from '@/types/quiz';
 import type { Certificate } from '@/types/certificate';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminChatDashboard from '../../components/chat/AdminChatDashboard';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/authentication/useUser';
 import { Navigate } from 'react-router-dom';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 

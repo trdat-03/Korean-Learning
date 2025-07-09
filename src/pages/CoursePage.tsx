@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { EnrollDialog } from "@/components/EnrollDialog";
 import { LoginPromptDialog } from "@/components/LoginPromptDialog";
-import { CourseContent } from "@/components/features/course/CourseContent";
-import { CourseEnrollCard } from "@/components/features/course/CourseEnrollCard";
-import { QuizSection } from "@/components/features/quiz/QuizSection";
-import { useCourse } from "@/hooks/features/course/useCourse";
+import { CourseContent } from "@/components/course/CourseContent";
+import { CourseEnrollCard } from "@/components/course/CourseEnrollCard";
+import { QuizSection } from "@/components/quiz/QuizSection";
+import { useCourse } from "@/hooks/course/useCourse";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

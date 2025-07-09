@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { LessonDetailType } from "@/models/LessonDetail";
-import { flashcardService } from "@/services/features/flashcardService";
+import { flashcardService } from "@/services/learning/flashcardService";
 import { Header } from "@/components/Header";
-import { FlashcardForm } from "@/components/features/flashcard/FlashcardForm";
+import { FlashcardForm } from "@/components/flashcard/FlashcardForm";
 import { AuthService } from "@/utils/AuthService";
 
 export const FlashcardEditPage = () => {

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { LessonDetailType } from "@/models/LessonDetail";
 import { AuthService } from "@/utils/AuthService";
-import { useFlashcards } from "@/hooks/features/flashcard/useFlashcards";
+import { useFlashcards } from "@/hooks/flashcard/useFlashcards";
 import { ROUTES } from "@/constant/route";
 
 export const FlashcardPage = () => {

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { useResetPassword } from "@/hooks/usePasswordReset";
+import { useResetPassword } from "@/hooks/authentication/usePasswordReset";
 import { ROUTES } from "@/constant/route";
 
 export default function ResetPasswordPage() {

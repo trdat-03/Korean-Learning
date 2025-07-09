@@ -14,7 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Mail, Lock, Eye, EyeOff, UserPlus, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegister } from "@/hooks/useAccountVerification";
+import { useRegister } from "@/hooks/authentication/useAccountVerification";
 import { ROUTES } from "@/constant/route";
 
 export default function RegisterPage() {

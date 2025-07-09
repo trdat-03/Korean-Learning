@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Loader2, MessageCircle } from 'lucide-react';
-import { chatService } from '../../services/chatService';
-import { firebaseChatService } from '../../services/firebaseChatService';
+import { chatService } from '../../services/communication/chatService';
+import { firebaseChatService } from '../../services/communication/firebaseChatService';
 import type { ChatMessage } from '../../types/chat';
 
 interface ChatWindowProps {

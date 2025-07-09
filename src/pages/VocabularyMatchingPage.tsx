@@ -2,9 +2,9 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Timer, ArrowLeft } from 'lucide-react';
 import type { LessonDetailType } from '@/models/LessonDetail';
-import { useVocabularyMatching } from '@/hooks/features/vocabulary-matching/useVocabularyMatching';
-import { MatchingCard } from '@/components/features/vocabulary-matching/MatchingCard';
-import { MatchingResults } from '@/components/features/vocabulary-matching/MatchingResults';
+import { useVocabularyMatching } from '@/hooks/vocabulary-matching/useVocabularyMatching';
+import { MatchingCard } from '@/components/vocabulary-matching/MatchingCard';
+import { MatchingResults } from '@/components/vocabulary-matching/MatchingResults';
 
 const VocabularyMatchingPage = () => {
   const location = useLocation();

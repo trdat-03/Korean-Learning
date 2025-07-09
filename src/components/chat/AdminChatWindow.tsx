@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Loader2, User, MessageSquare } from 'lucide-react';
-import { firebaseChatService } from '../../services/firebaseChatService';
+import { firebaseChatService } from '../../services/communication/firebaseChatService';
 import type { ChatMessage } from '../../types/chat';
 
 interface AdminChatWindowProps {

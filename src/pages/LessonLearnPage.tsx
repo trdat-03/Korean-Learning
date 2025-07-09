@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
-import { LessonLayout } from '@/components/features/lesson/LessonLayout';
-import { useLesson } from '@/hooks/features/lesson/useLesson';
+import { LessonLayout } from '@/components/lesson/LessonLayout';
+import { useLesson } from '@/hooks/lesson/useLesson';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

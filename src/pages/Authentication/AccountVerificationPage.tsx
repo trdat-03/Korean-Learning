@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, ArrowLeft, CheckCircle, Clock, RefreshCw } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { useVerifyAccount, useResendVerification } from "@/hooks/useAccountVerification";
+import { useVerifyAccount, useResendVerification } from "@/hooks/authentication/useAccountVerification";
 import { ROUTES } from "@/constant/route";
 
 export default function AccountVerificationPage() {

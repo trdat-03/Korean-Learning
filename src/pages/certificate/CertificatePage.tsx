@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Award, Calendar, BookOpen, AlertTriangle } from 'lucide-react';
 import { AuthService } from '@/utils/AuthService';
-import { useCertificate } from '@/hooks/features/certificate/useCertificate';
+import { useCertificate } from '@/hooks/certificate/useCertificate';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Clock, User, Dot } from 'lucide-react';
-import { chatService } from '../../services/chatService';
-import { firebaseChatService } from '../../services/firebaseChatService';
+import { chatService } from '../../services/communication/chatService';
+import { firebaseChatService } from '../../services/communication/firebaseChatService';
 import type { ChatSession, ChatMessage } from '../../types/chat';
 
 interface AdminChatListProps {

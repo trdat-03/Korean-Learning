@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { LessonDetailType } from "@/models/LessonDetail";
-import { flashcardService } from "@/services/features/flashcardService";
+import { flashcardService } from "@/services/learning/flashcardService";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit } from "lucide-react";
-import LessonDetail from "@/components/features/lesson/LessonDetail";
+import LessonDetail from "@/components/lesson/LessonDetail";
 import { Header } from "@/components/Header";
 import { AuthService } from "@/utils/AuthService";
 

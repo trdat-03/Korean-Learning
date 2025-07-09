@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { AdminTransactionTable } from '@/components/features/subscription/AdminTransactionTable';
-import { subscriptionService } from '@/services/features/subscriptionService';
-import { useStatistics } from '@/hooks/features/statistics/useStatistics';
-import { statisticsUtils } from '@/services/features/statisticsService';
+import { AdminTransactionTable } from '@/components/subscription/AdminTransactionTable';
+import { subscriptionService } from '@/services/system/subscriptionService';
+import { useStatistics } from '@/hooks/statistics/useStatistics';
+import { statisticsUtils } from '@/services/system/statisticsService';
 import type { PendingTransaction } from '@/types/subscription';
 import type { TransactionStatistics } from '@/types/statistics';
 import { Alert, AlertDescription } from '@/components/ui/alert';

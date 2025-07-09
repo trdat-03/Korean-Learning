@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, X, Minimize2 } from 'lucide-react';
 import ChatWindow from './ChatWindow';
 import AdminChatDashboard from './AdminChatDashboard';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/authentication/useUser';
 
 interface ChatButtonProps {
   userId: number;

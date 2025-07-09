@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Crown, Calendar, Users } from 'lucide-react';
-import { subscriptionService } from '@/services/features/subscriptionService';
+import { subscriptionService } from '@/services/system/subscriptionService';
 import type { ActiveSubscription } from '@/types/subscription';
 import { useNavigate } from 'react-router-dom';
 

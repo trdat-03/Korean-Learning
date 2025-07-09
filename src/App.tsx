@@ -19,8 +19,8 @@ import PracticePage from './pages/PracticePage';
 
 import Index from "./pages/Index";
 import VocabularyMatchingPage from './pages/VocabularyMatchingPage';
-import { ConversationPage } from './pages/chat/ConversationPage';
-import { ChatTopicsPage } from './pages/chat/ChatTopicsPage';
+import { ConversationPage } from './pages/conversation/ConversationPage';
+import { ChatTopicsPage } from './pages/conversation/ChatTopicsPage';
 import { Toaster } from "./components/ui/toaster";
 import {FlashcardPage} from './pages/flashcard/FlashcardPage';
 import { FlashcardDetailPage } from "@/pages/flashcard/FlashcardDetailPage";
@@ -42,7 +42,7 @@ import AdminChatPage from "./pages/admin/AdminChatPage";
 
 // Chat imports
 import ChatButton from "./components/chat/ChatButton";
-import { useUser } from "./hooks/useUser";
+import { useUser } from "./hooks/authentication/useUser";
 
 function App() {
   const { user, isLoading } = useUser();

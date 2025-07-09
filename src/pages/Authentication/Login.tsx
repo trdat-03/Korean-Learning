@@ -7,57 +7,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
-import {AuthService} from "@/utils/AuthService";
 import { ROUTES } from "@/constant/route";
-
-import type { UserDTO } from "@/models/User";
+import { useLogin } from "@/hooks/authentication/useLogin";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState("");
+
+  const { login, isLoading, error, clearError } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    clearError();
 
-    try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        const token: string = data.token;
-        const user: UserDTO = data;
-
-        AuthService.login(token, user);
-
-        if (user.role === "ADMIN") {
-          console.log(data)
-          window.location.href = "/admin";
-        } else {
-          console.log(data)
-          window.location.href = "/";
-        }
-      } else {
-        const data = await response.json();
-        setError(data.message || "Đăng nhập thất bại!");
-      }
-    } catch (error) {
-      console.error(error);
-      setError("Lỗi kết nối server!");
-    }
+    await login({
+      email,
+      password,
+    });
   };
 
   return (
@@ -97,6 +65,7 @@ export default function LoginPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     className="pl-10"
                     required
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -116,6 +85,7 @@ export default function LoginPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     className="pl-10 pr-10"
                     required
+                    disabled={isLoading}
                   />
                   <button
                     type="button"
@@ -157,8 +127,9 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5"
+                disabled={isLoading}
               >
-                Đăng nhập
+                {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
               </Button>
             </form>
             {/* Sign Up Link */}
@@ -166,7 +137,7 @@ export default function LoginPage() {
               <p className="text-sm text-gray-600">
                 Chưa có tài khoản?{" "}
                 <Link
-                  to="/register"
+                  to={ROUTES.REGISTER}
                   className="text-red-600 hover:text-red-700 font-medium hover:underline"
                 >
                   Đăng ký ngay

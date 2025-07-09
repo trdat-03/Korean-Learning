@@ -2,10 +2,10 @@
 import { useLocation } from 'react-router-dom';
 import type { LessonDetailType } from '../models/LessonDetail';
 import type { PracticeConfig } from '@/types/practice';
-import { usePractice } from '@/hooks/features/practice/usePractice';
-import { PracticeSidebar } from '@/components/features/practice/PracticeSidebar';
-import { PracticeQuestion } from '@/components/features/practice/PracticeQuestion';
-import { PracticeResults } from '@/components/features/practice/PracticeResults';
+import { usePractice } from '@/hooks/practice/usePractice';
+import { PracticeSidebar } from '@/components/practice/PracticeSidebar';
+import { PracticeQuestion } from '@/components/practice/PracticeQuestion';
+import { PracticeResults } from '@/components/practice/PracticeResults';
 
 const PracticePage = () => {
   const location = useLocation();

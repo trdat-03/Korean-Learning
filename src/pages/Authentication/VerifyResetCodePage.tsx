@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, ArrowLeft, CheckCircle, Clock } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { useVerifyResetCode } from "@/hooks/usePasswordReset";
+import { useVerifyResetCode } from "@/hooks/authentication/usePasswordReset";
 import { ROUTES } from "@/constant/route";
 
 export default function VerifyResetCodePage() {

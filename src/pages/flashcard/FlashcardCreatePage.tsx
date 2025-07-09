@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { FlashcardForm } from "@/components/features/flashcard/FlashcardForm";
+import { FlashcardForm } from "@/components/flashcard/FlashcardForm";
 import { AuthService } from "@/utils/AuthService";
 
 export const FlashcardCreatePage = () => {
