@@ -2,16 +2,25 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { LessonDetailType } from "@/models/LessonDetail";
-import { AuthService } from "@/utils/AuthService";
+import { useAuth } from "@/hooks/useAuth";
 import { useFlashcards } from "@/hooks/flashcard/useFlashcards";
 import { ROUTES } from "@/constant/route";
+import { LoginPromptDialog } from "@/components/LoginPromptDialog";
+import { useState, useEffect } from "react";
 
 export const FlashcardPage = () => {
-  const user = AuthService.getUser();
+  const { isAuthenticated, currentUser } = useAuth();
+  const [showLoginPrompt, setShowLoginPrompt] = useState(!isAuthenticated);
   const { flashcards, isLoading, error } = useFlashcards(
-    user?.id || 0
+    currentUser?.id || 0
   );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setShowLoginPrompt(true);
+    }
+  }, [isAuthenticated]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -50,6 +59,11 @@ export const FlashcardPage = () => {
           )}
         </div>
       </div>
+
+      <LoginPromptDialog
+        open={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
+      />
     </>
   );
 }; 

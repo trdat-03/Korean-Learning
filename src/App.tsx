@@ -8,11 +8,12 @@ import ResetPasswordPage from "./pages/Authentication/ResetPasswordPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { AdminCourses } from "./pages/admin/AdminCourses";
 import Course from "./pages/CoursePage";
-import { AdminStudents } from "./pages/admin/AdminStudents";
-import { AdminCategories } from "./pages/admin/AdminCategories";
+import { AdminUser } from "./pages/admin/AdminUser";
 import AdminCourseDetail from "./pages/admin/AdminCourseDetail";
 import AdminCourseForm from "./pages/admin/AdminCourseForm";
-import { AdminStudentDetail } from "./pages/admin/AdminStudentDetail";
+import { AdminUserDetail } from "./pages/admin/AdminUserDetail";
+import { AdminUserEdit } from "./pages/admin/AdminUserEdit";
+import { AdminUserCreate } from "./pages/admin/AdminUserCreate";
 import AdminLessonDetail from "./pages/admin/AdminLessonDetail"; 
 import LessonLearnPage from "./pages/LessonLearnPage";
 import PracticePage from './pages/PracticePage';
@@ -39,6 +40,14 @@ import SubscriptionPlansPage from "./pages/subscription/SubscriptionPlansPage";
 import SubscriptionStatusPage from "./pages/subscription/SubscriptionStatusPage";
 import AdminSubscriptionDashboard from "./pages/admin/AdminSubscriptionDashboard";
 import AdminChatPage from "./pages/admin/AdminChatPage";
+
+// Teacher imports
+import { TeacherLayout } from "./components/teacher/TeacherLayout";
+import { TeacherCourseList } from "./pages/teacher/TeacherCourseList";
+import { TeacherCourseCreate } from "./pages/teacher/TeacherCourseCreate";
+import { TeacherCourseDetail } from "./pages/teacher/TeacherCourseDetail";
+import { TeacherCourseEdit } from "./pages/teacher/TeacherCourseEdit";
+import { TeacherStudentList } from "./pages/teacher/TeacherStudentList";
 
 // Chat imports
 import ChatButton from "./components/chat/ChatButton";
@@ -83,10 +92,24 @@ function App() {
           <Route path="/admin/courses/:id" element={<AdminCourseDetail />} />
           <Route path="/admin/courses/create" element={<AdminCourseForm />} />
           <Route path="/admin/courses/edit/:id" element={<AdminCourseForm />} />
-          <Route path="/admin/students" element={<AdminStudents />} />
-          <Route path="/admin/students/:id" element={<AdminStudentDetail />} />
-          <Route path="/admin/categories" element={<AdminCategories />} />
+          <Route path="/admin/students" element={<AdminUser />} />
+          
+          {/* Admin User Management Routes */}
+          <Route path="/admin/users/new" element={<AdminUserCreate />} />
+          <Route path="/admin/users/:id" element={<AdminUserDetail />} />
+          <Route path="/admin/users/:id/edit" element={<AdminUserEdit />} />
+          
           <Route path="/admin/lessons/:id" element={<AdminLessonDetail />} />
+
+          {/* Teacher routes */}
+          <Route path="/teacher" element={<TeacherLayout />}>
+            <Route index element={<TeacherCourseList />} />
+            <Route path="courses" element={<TeacherCourseList />} />
+            <Route path="courses/create" element={<TeacherCourseCreate />} />
+            <Route path="courses/:id" element={<TeacherCourseDetail />} />
+            <Route path="courses/edit/:id" element={<TeacherCourseEdit />} />
+            <Route path="students" element={<TeacherStudentList />} />
+          </Route>
 
           {/* Subscription routes */}
           <Route path="/subscription" element={<SubscriptionPlansPage />} />
@@ -94,7 +117,7 @@ function App() {
 
           {/* Chat routes */}
           <Route path="/chat-topics" element={<ChatTopicsPage />} />
-          <Route path="/conversation/:topicId?" element={<ConversationPage />} />
+          <Route path="/conversation/:conversationId?" element={<ConversationPage />} />
           
           {/* Quiz routes */}
           <Route path="/quiz/:quizId/attempt" element={<QuizAttemptPage />} />
@@ -114,13 +137,15 @@ function App() {
           <Route path="*" element={<Index />} />
         </Routes>
         
-        {/* Chat Button - Show on all pages except login/register */}
-        {user && !window.location.pathname.includes('/login') && 
+        {/* Chat Button - Show on all pages except login/register and teacher pages */}
+        {user && user.role?.toUpperCase() !== 'TEACHER' && 
+         !window.location.pathname.includes('/login') && 
          !window.location.pathname.includes('/register') && 
          !window.location.pathname.includes('/account-verification') && 
          !window.location.pathname.includes('/forgot-password') && 
          !window.location.pathname.includes('/verify-reset-code') && 
-         !window.location.pathname.includes('/reset-password') && (
+         !window.location.pathname.includes('/reset-password') && 
+         !window.location.pathname.includes('/teacher') && (
           <ChatButton 
             userId={user.id} 
             userRole={user.role} 

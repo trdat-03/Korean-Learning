@@ -1,16 +1,23 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constant/route";
 
 interface LoginPromptDialogProps {
   open: boolean;
   onClose: () => void;
-  onLogin: () => void;
 }
 
 export const LoginPromptDialog: React.FC<LoginPromptDialogProps> = ({
   open,
   onClose,
-  onLogin,
 }) => {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    onClose(); // Đóng dialog trước
+    navigate(ROUTES.LOGIN); // Navigate tới trang login
+  };
+
   if (!open) return null;
 
   return (
@@ -31,9 +38,9 @@ export const LoginPromptDialog: React.FC<LoginPromptDialogProps> = ({
           </button>
           <button
             className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-            onClick={onLogin}
+            onClick={handleLogin}
           >
-            Đăng nhập
+            Đăng nhập nha
           </button>
         </div>
       </div>

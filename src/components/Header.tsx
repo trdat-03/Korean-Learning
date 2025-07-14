@@ -20,15 +20,14 @@ import {
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constant/route";
-import { AuthService } from "@/utils/AuthService";
 import { useLogout } from "./useLogout";
+import { useAuth } from "@/hooks/useAuth";
 import axios from "axios";
-import type { CourseCategory } from "@/models/CourseCategory"; // adjust path if needed
+import type { CourseCategory } from "@/models/CourseCategory"; 
 
 export const Header = () => {
   const logout = useLogout();
-  const isAuthenticated = AuthService.isLoggedIn();
-  const currentUser = AuthService.getUser();
+  const { isAuthenticated, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<CourseCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,8 +40,7 @@ export const Header = () => {
         const resp = await axios.get("http://localhost:8080/api/course-categories");
 
         setCategories(resp.data);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("Không thể tải danh mục khóa học");
       } finally {
         setLoading(false);
@@ -141,7 +139,7 @@ export const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={"/images/avatar.avif"} alt={currentUser?.name || "User Avatar"} />
+                    <AvatarImage src={"/images/avatar.avif"} alt={currentUser?.fullName || "User Avatar"} />
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

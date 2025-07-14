@@ -16,7 +16,7 @@ import {
 import type { Grammar } from '@/models/Grammar';
 import type { LessonDetailType } from '@/models/LessonDetail';
 import { useGrammarPractice } from '@/hooks/grammar/useGrammarPractice';
-import type { GrammarFeedback } from '@/services/features/grammarService';
+import type { GrammarFeedback } from '@/services/learning/grammarService';
 import { useToast } from '@/components/ui/use-toast';
 import { AlertAiUsageCount } from '@/components/ui/AlertAiUsageCount';
 

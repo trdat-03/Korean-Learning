@@ -27,13 +27,15 @@ export const useSubscription = () => {
       let activeSubData = null;
       let pendingTx: PendingTransaction[] = [];
 
+      // Luôn tải danh sách plans (không cần đăng nhập)
       try {
         plansData = await subscriptionService.getSubscriptionPlans();
       } catch (planError) {
         console.warn('Using mock data for plans:', planError);
       }
 
-      if (userId) {
+      // Chỉ tải thông tin cá nhân khi đã đăng nhập
+      if (userId && userId > 0) {
         try {
           activeSubData = await subscriptionService.getUserActiveSubscription(userId);
         } catch (subError) {

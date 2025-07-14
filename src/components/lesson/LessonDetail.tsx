@@ -1,12 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { LessonDetailType } from '../../models/LessonDetail';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Button } from '../ui/button';
 import {
   Brain,
   Target,
   BookOpen,
   Clock,
-  GraduationCap
+  GraduationCap,
+  Lock
 } from 'lucide-react';
 import GrammarPracticeComponent from './GrammarPracticeTab';
 import { LearnTabContent } from './LearnTab';
@@ -15,9 +18,12 @@ import { MatchingTabContent } from './MatchingTab';
 
 interface LessonProps {
   lesson: LessonDetailType;
+  isPreview?: boolean;
+  courseId?: number;
 }
 
-const Lesson: React.FC<LessonProps> = ({ lesson }) => {
+const Lesson: React.FC<LessonProps> = ({ lesson, isPreview = false, courseId }) => {
+  const navigate = useNavigate();
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -46,21 +52,48 @@ const Lesson: React.FC<LessonProps> = ({ lesson }) => {
               <span>Học</span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="grammar" className="flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all">
+          
+          <TabsTrigger 
+            value="grammar" 
+            className={`flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all ${
+              isPreview ? 'opacity-75' : ''
+            }`}
+          >
             <div className="flex flex-col items-center gap-2">
-              <Target className="w-5 h-5" />
+              <div className="relative">
+                <Target className="w-5 h-5" />
+                {isPreview && <Lock className="w-3 h-3 absolute -top-1 -right-1 text-gray-400" />}
+              </div>
               <span>Ngữ pháp</span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="review" className="flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all">
+          
+          <TabsTrigger 
+            value="review" 
+            className={`flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all ${
+              isPreview ? 'opacity-75' : ''
+            }`}
+          >
             <div className="flex flex-col items-center gap-2">
-              <BookOpen className="w-5 h-5" />
+              <div className="relative">
+                <BookOpen className="w-5 h-5" />
+                {isPreview && <Lock className="w-3 h-3 absolute -top-1 -right-1 text-gray-400" />}
+              </div>
               <span>Ôn tập</span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="matching" className="flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all">
+          
+          <TabsTrigger 
+            value="matching" 
+            className={`flex-1 data-[state=active]:bg-red-600 data-[state=active]:text-white rounded-md py-3 transition-all ${
+              isPreview ? 'opacity-75' : ''
+            }`}
+          >
             <div className="flex flex-col items-center gap-2">
-              <Target className="w-5 h-5" />
+              <div className="relative">
+                <Target className="w-5 h-5" />
+                {isPreview && <Lock className="w-3 h-3 absolute -top-1 -right-1 text-gray-400" />}
+              </div>
               <span>Ghép từ</span>
             </div>
           </TabsTrigger>
@@ -71,15 +104,69 @@ const Lesson: React.FC<LessonProps> = ({ lesson }) => {
         </TabsContent>
 
         <TabsContent value="grammar" className="mt-6">
-          <GrammarPracticeComponent lesson={lesson} />
+          {isPreview ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex flex-col items-center gap-4">
+                <Lock className="w-16 h-16 text-gray-400" />
+                <h3 className="text-xl font-semibold text-gray-600">Tính năng bị khóa</h3>
+                <p className="text-gray-500 max-w-md">
+                  Tính năng Ngữ pháp chỉ dành cho thành viên đã đăng ký. Hãy đăng ký khóa học để trải nghiệm đầy đủ.
+                </p>
+                <Button 
+                  onClick={() => courseId && navigate(`/courses/${courseId}`)}
+                  className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition"
+                >
+                  Đăng ký khóa học ngay
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <GrammarPracticeComponent lesson={lesson} />
+          )}
         </TabsContent>
 
         <TabsContent value="review" className="mt-6">
-          <ReviewTabContent lesson={lesson} />
+          {isPreview ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex flex-col items-center gap-4">
+                <Lock className="w-16 h-16 text-gray-400" />
+                <h3 className="text-xl font-semibold text-gray-600">Tính năng bị khóa</h3>
+                <p className="text-gray-500 max-w-md">
+                  Tính năng Ôn tập chỉ dành cho thành viên đã đăng ký. Hãy đăng ký khóa học để trải nghiệm đầy đủ.
+                </p>
+                <Button 
+                  onClick={() => courseId && navigate(`/courses/${courseId}`)}
+                  className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition"
+                >
+                  Đăng ký khóa học ngay
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <ReviewTabContent lesson={lesson} />
+          )}
         </TabsContent>
 
         <TabsContent value="matching" className="mt-6">
-          <MatchingTabContent lesson={lesson} />
+          {isPreview ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex flex-col items-center gap-4">
+                <Lock className="w-16 h-16 text-gray-400" />
+                <h3 className="text-xl font-semibold text-gray-600">Tính năng bị khóa</h3>
+                <p className="text-gray-500 max-w-md">
+                  Tính năng Ghép từ chỉ dành cho thành viên đã đăng ký. Hãy đăng ký khóa học để trải nghiệm đầy đủ.
+                </p>
+                <Button 
+                  onClick={() => courseId && navigate(`/courses/${courseId}`)}
+                  className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition"
+                >
+                  Đăng ký khóa học ngay
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <MatchingTabContent lesson={lesson} />
+          )}
         </TabsContent>
       </Tabs>
     </div>

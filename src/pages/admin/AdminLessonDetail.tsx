@@ -1,4 +1,3 @@
-// Sử dụng index thay vì id cho từ vựng và ngữ pháp để tránh lỗi id null
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -71,13 +70,35 @@ export default function AdminLessonDetail() {
 
   const handleSaveLesson = async () => {
     if (!lesson) return;
+    
     try {
+      // Transform data để loại bỏ null ids và convert sang format backend mong đợi
+      const transformedLesson = {
+        ...lesson,
+        vocabularies: lesson.vocabularies.map(v => ({
+          ...v,
+          id: v.id === null ? undefined : v.id,
+        })),
+        grammars: lesson.grammars.map(g => ({
+          ...g,
+          id: g.id === null ? undefined : g.id,
+        })),
+      };
+      
       const res = await fetch(`http://localhost:8080/api/lessons/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lesson),
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token') || ''}` 
+        },
+        body: JSON.stringify(transformedLesson),
       });
-      if (!res.ok) throw new Error("Lưu bài học thất bại.");
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Lưu bài học thất bại. Status: ${res.status}, Error: ${errorText}`);
+      }
+      
       setMessage("Đã lưu bài học thành công!");
       setAlertType('success');
       setShowAlert(true);
@@ -115,6 +136,7 @@ export default function AdminLessonDetail() {
   const handleSubmitVocab = (e: React.FormEvent, index?: number | null) => {
     e.preventDefault();
     if (!lesson) return;
+    
     if (index != null) {
       const updated = [...lesson.vocabularies];
       updated[index] = { ...updated[index], ...vocabForm };
@@ -157,16 +179,17 @@ export default function AdminLessonDetail() {
 
   const handleDeleteGrammar = (index: number) => {
     if (!lesson) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xoá ngữ pháp này?")) return;
     const updated = [...lesson.grammars];
     updated.splice(index, 1);
     setLesson({ ...lesson, grammars: updated });
     if (editingGrammarIndex === index) setEditingGrammarIndex(null);
-    if (!window.confirm("Bạn có chắc chắn muốn xoá ngữ pháp này?")) return;
   };
 
   const handleSubmitGrammar = (e: React.FormEvent) => {
     e.preventDefault();
     if (!lesson) return;
+    
     if (editingGrammarIndex != null) {
       const updated = [...lesson.grammars];
       updated[editingGrammarIndex] = { ...updated[editingGrammarIndex], ...grammarForm };

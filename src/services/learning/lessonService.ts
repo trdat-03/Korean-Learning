@@ -11,5 +11,10 @@ export const lessonService = {
   getLessonById: async (lessonId: number): Promise<LessonDetailType> => {
     const response = await api.get(`/lessons/${lessonId}`);
     return response.data;
+  },
+
+  updateLesson: async (lessonId: number, lessonData: Partial<LessonDetailType>): Promise<LessonDetailType> => {
+    const response = await api.put(`/lessons/${lessonId}`, lessonData);
+    return response.data;
   }
 }; 

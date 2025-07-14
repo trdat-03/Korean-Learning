@@ -8,7 +8,6 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  token: string;
   user: UserDTO;
 }
 
@@ -18,7 +17,6 @@ class LoginService {
       const response = await api.post('/auth/login', credentials);
       
       return {
-        token: response.data.token,
         user: response.data as UserDTO,
       };
     } catch (error) {

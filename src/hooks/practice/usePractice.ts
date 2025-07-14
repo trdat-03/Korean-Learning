@@ -84,15 +84,15 @@ export const usePractice = (config: PracticeConfig | undefined, lesson: LessonDe
     
     try {
       const score = calculateScore();
-      const userId = AuthService.getUser().id;
+      const user = AuthService.getUser();
       
-      if (!userId) {
-        console.error('User ID not found');
+      if (!user || !user.id) {
+        console.error('User not found or user ID not available');
         return;
       }
 
       const results = await submitTestResult(
-        userId,
+        String(user.id),
         String(lesson?.id),
         score
       );

@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import type {Course} from "@/models/Course";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { useAdminCourses } from "@/hooks/admin/useAdminCourses";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -32,29 +31,39 @@ import {
 
 export const AdminCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
-   const [courses, setCourses] = useState<Course[]>([]);
-
-    useEffect(() => {
-      fetch("http://localhost:8080/api/admin/courses")
-        .then((res) => res.json())
-        .then((data) => {
-          // Thêm field tạm nếu thiếu
-          const formatted = data.map((c: Course) => ({
-            ...c,
-            status: "active", // hoặc inactive nếu muốn
-          }));
-          setCourses(formatted);
-        })
-        .catch((error) => {
-          console.error("Lỗi khi lấy danh sách học viên:", error);
-        });
-    }, []);
+  const { courses, loading, error } = useAdminCourses();
  
   const filteredCourses = courses.filter(
     (course) =>
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <AdminLayout title="Quản lý khóa học">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Đang tải...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout title="Quản lý khóa học">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={() => window.location.reload()}>Thử lại</Button>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="Quản lý khóa học">
@@ -89,7 +98,6 @@ export const AdminCourses = () => {
                 <TableHead>Tên khóa học</TableHead>
                 <TableHead>Danh mục</TableHead>
                 <TableHead>Mô tả</TableHead>
-                <TableHead>Trạng thái</TableHead>
                 <TableHead>Học viên</TableHead>
                 <TableHead>Ngày tạo</TableHead>
                 <TableHead className="text-right">Thao tác</TableHead>
@@ -102,23 +110,6 @@ export const AdminCourses = () => {
                   <TableCell>{course.categoryName}</TableCell>
                   <TableCell className="max-w-md truncate">
                     {course.description}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      className={
-                        course.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : course.status === "draft"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
-                      }
-                    >
-                      {course.status === "active"
-                        ? "Đang hoạt động"
-                        : course.status === "draft"
-                        ? "Bản nháp"
-                        : "Đã lưu trữ"}
-                    </Badge>
                   </TableCell>
                   <TableCell>{course.studentCount}</TableCell>
                   <TableCell>
@@ -210,21 +201,6 @@ export const AdminCourses = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Badge
-                      className={
-                        course.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : course.status === "draft"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
-                      }
-                    >
-                      {course.status === "active"
-                        ? "Đang hoạt động"
-                        : course.status === "draft"
-                        ? "Bản nháp"
-                        : "Đã lưu trữ"}
-                    </Badge>
                     <span className="text-sm text-gray-500">
                       {new Date(course.created_at).toLocaleDateString()}
                     </span>

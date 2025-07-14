@@ -3,7 +3,7 @@ import type { ConversationResponse, MessageResponse } from '../../types/conversa
 
 export const conversationService = {
   // Start new conversation
-  startConversation: async (userId: string, topic: string, roleScenario: string): Promise<ConversationResponse> => {
+  startConversation: async (userId: number, topic: string, roleScenario: string): Promise<ConversationResponse> => {
     const requestBody = {
       userId,
       topic,
@@ -22,7 +22,6 @@ export const conversationService = {
         needsCorrection,
         senderType: 'USER' 
       });
-      console.log('API Response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error in sendMessage:', error);
@@ -33,14 +32,12 @@ export const conversationService = {
   // Get conversation with messages
   getConversation: async (conversationId: string): Promise<ConversationResponse> => {
     const response = await api.get(`/conversation/conversations/${conversationId}`);
-    console.log('Get Conversation Response:', response.data); // Log the response
     return response.data;
   },
 
   // Get user conversations
-  getUserConversations: async (userId: string): Promise<ConversationResponse[]> => {
+  getUserConversations: async (userId: number): Promise<ConversationResponse[]> => {
     const response = await api.get(`/conversation/users/${userId}/conversations`);
-    console.log('Get User Conversations Response:', response.data); // Log the response
     return response.data;
   },
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { EnrollDialog } from "@/components/EnrollDialog";
 import { LoginPromptDialog } from "@/components/LoginPromptDialog";
@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Course: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const {
     course,
     loading,
@@ -23,6 +24,12 @@ const Course: React.FC = () => {
     handleEnrollment,
     handleCourseAction,
   } = useCourse(Number(id));
+
+  const handlePreview = () => {
+    if (course?.id) {
+      navigate(`/courses/${course.id}/learn?preview=true`);
+    }
+  };
 
   if (loading) return <p className="text-center py-10">Đang tải dữ liệu...</p>;
   if (!course) return <p className="text-center py-10">Không tìm thấy khóa học.</p>;
@@ -39,7 +46,6 @@ const Course: React.FC = () => {
       <LoginPromptDialog
         open={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
-        onLogin={() => setShowLoginPrompt(false)}
       />
 
       <div className="container mx-auto px-4 py-8">
@@ -63,6 +69,7 @@ const Course: React.FC = () => {
               course={course}
               isEnrolled={isEnrolled}
               onAction={handleCourseAction}
+              onPreview={handlePreview}
             />
           </div>
         </div>

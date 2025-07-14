@@ -16,7 +16,7 @@ export const useChatTopics = () => {
   useEffect(() => {
     const fetchTopics = async () => {
       if (!userId) {
-        setError('User not authenticated');
+        setIsLoading(false);
         return;
       }
 

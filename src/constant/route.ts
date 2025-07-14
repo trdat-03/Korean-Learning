@@ -49,6 +49,12 @@ export const ROUTES = {
       LIST: "/admin/students",
       DETAIL: "/admin/students/:id"
     },
+    USERS: {
+      LIST: "/admin/users",
+      DETAIL: "/admin/users/:id",
+      CREATE: "/admin/users/new",
+      EDIT: "/admin/users/:id/edit"
+    },
     CATEGORIES: {
       LIST: "/admin/categories",
       DETAIL: "/admin/categories/:id",
@@ -57,6 +63,20 @@ export const ROUTES = {
     },
     LESSONS: {
       DETAIL: "/admin/lessons/:id"
+    }
+  },
+
+  // Teacher Routes
+  TEACHER: {
+    COURSES: {
+      LIST: "/teacher/courses",
+      DETAIL: "/teacher/courses/:id",
+      CREATE: "/teacher/courses/create",
+      EDIT: "/teacher/courses/edit/:id"
+    },
+    STUDENTS: {
+      LIST: "/teacher/students",
+      DETAIL: "/teacher/students/:id"
     }
   },
 

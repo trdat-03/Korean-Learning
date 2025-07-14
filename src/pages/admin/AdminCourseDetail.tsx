@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import type { CourseDetail } from "@/models/CourseDetail";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -15,13 +14,48 @@ import {
   Calendar,
   Edit,
   Users,
+  Loader2,
 } from "lucide-react";
+import { adminCourseService } from "@/services/admin/courseService";
+import type { CourseDetail } from "@/models/CourseDetail";
 
 
 export default function AdminCourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  
   const [course, setCourse] = useState<CourseDetail | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCourseDetail = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await adminCourseService.getCourseDetailPublic(Number(id));
+      setCourse(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch course detail');
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const refresh = useCallback(() => {
+    fetchCourseDetail();
+  }, [fetchCourseDetail]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCourseDetail();
+    }
+  }, [id, fetchCourseDetail]);
 
   // Dữ liệu cứng cho các phần không có trong API
   const rating = 4.8;
@@ -61,13 +95,48 @@ export default function AdminCourseDetail() {
     },
   ];
 
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/courses/${id}`)
-      .then((res) => res.json())
-      .then((data) => setCourse(data));
-  }, [id]);
+  if (loading) {
+    return (
+      <AdminLayout title="Đang tải...">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+            <p className="text-gray-600">Đang tải chi tiết khóa học...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
-  if (!course) return <div>Đang tải...</div>;
+  if (error) {
+    return (
+      <AdminLayout title="Lỗi">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={() => { clearError(); refresh(); }} variant="outline">
+              Thử lại
+            </Button>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (!course) {
+    return (
+      <AdminLayout title="Không tìm thấy">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">Không tìm thấy khóa học</p>
+            <Link to="/admin/courses">
+              <Button variant="outline">Quay lại danh sách</Button>
+            </Link>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const stats = [
     {

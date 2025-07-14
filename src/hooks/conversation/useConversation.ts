@@ -16,6 +16,13 @@ export const useConversation = () => {
   const { conversationId } = useParams();
   const userId = AuthService.getUser()?.id;
 
+  // Utility function to ensure unique conversations
+  const ensureUniqueConversations = (conversations: Conversation[]) => {
+    return conversations.filter((conv, index, self) => 
+      index === self.findIndex(c => c.id === conv.id)
+    );
+  };
+
   const fetchAiUsageCount = async () => {
     const user = AuthService.getUser();
     if (user && user.id) {
@@ -41,8 +48,7 @@ export const useConversation = () => {
           return acc;
         }, {} as Record<string, ChatTopic>);
         setTopics(topicsMap);
-      } catch (error) {
-        console.error('Error fetching topics:', error);
+      } catch {
         setError('Failed to fetch topics');
       }
     };
@@ -69,10 +75,11 @@ export const useConversation = () => {
           }))
         }));
 
-        setConversations(convertedConversations);
+        const uniqueConversations = ensureUniqueConversations(convertedConversations);
+        setConversations(uniqueConversations);
         
         if (conversationId) {
-          const conversation = convertedConversations.find(conv => conv.id === conversationId);
+          const conversation = uniqueConversations.find(conv => conv.id === conversationId);
           if (conversation) {
             setSelectedConversation(conversation);
           } else {
@@ -88,15 +95,20 @@ export const useConversation = () => {
                 }))
               };
               setSelectedConversation(convertedConversation);
-              setConversations(prev => [...prev, convertedConversation]);
-            } catch (error) {
-              console.error('Error fetching conversation:', error);
+              // Chỉ thêm vào danh sách nếu chưa tồn tại
+              setConversations(prev => {
+                const exists = prev.some(conv => conv.id === conversationId);
+                if (!exists) {
+                  return ensureUniqueConversations([...prev, convertedConversation]);
+                }
+                return prev;
+              });
+            } catch {
               setError('Failed to fetch conversation');
             }
           }
         }
-      } catch (error) {
-        console.error('Error fetching conversations:', error);
+      } catch {
         setError('Failed to fetch conversations');
       }
     };
@@ -142,7 +154,7 @@ export const useConversation = () => {
       });
 
       setConversations(prev => 
-        prev.map(conv => {
+        ensureUniqueConversations(prev.map(conv => {
           if (conv.id === selectedConversation.id) {
             return {
               ...conv,
@@ -150,13 +162,12 @@ export const useConversation = () => {
             };
           }
           return conv;
-        })
+        }))
       );
 
       // Sau khi gửi tin nhắn thành công, fetch lại aiUsageCount
       await fetchAiUsageCount();
-    } catch (error) {
-      console.error('Error sending message:', error);
+    } catch {
       setError('Failed to send message');
       setSelectedConversation(prev => {
         if (!prev) return null;
@@ -177,8 +188,7 @@ export const useConversation = () => {
       if (selectedConversation?.id === conversationId) {
         setSelectedConversation(null);
       }
-    } catch (error) {
-      console.error('Error deleting conversation:', error);
+    } catch {
       setError('Failed to delete conversation');
     }
   };

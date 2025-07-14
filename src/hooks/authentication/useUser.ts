@@ -6,26 +6,16 @@ export const useUser = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Giả lập load user data từ localStorage hoặc API
     const loadUserData = () => {
       try {
         const userData = localStorage.getItem('user');
         if (userData) {
           const parsedUser = JSON.parse(userData);
           setUser(parsedUser);
-        } else {
-          // Tạo mock user cho demo
-          const mockUser: User = {
-            id: 12,
-            name: 'Demo Student',
-            email: 'student@example.com',
-            role: 'STUDENT',
-          };
-          setUser(mockUser);
-          localStorage.setItem('user', JSON.stringify(mockUser));
         }
-      } catch (error) {
-        console.error('Error loading user data:', error);
+        // Xóa phần tạo mock user tự động
+      } catch {
+        // Nếu có lỗi parse JSON, không làm gì cả
       } finally {
         setIsLoading(false);
       }

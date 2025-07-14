@@ -13,19 +13,28 @@ export const useLogin = () => {
     setError(null);
 
     try {
-      const { token, user } = await loginService.login(credentials);
-      
-      // Save auth data
-      AuthService.login(token, user);
+      const { user } = await loginService.login(credentials);
 
-      // Redirect based on user role
+      // Lưu thông tin user vào localStorage
+      AuthService.login(user);
+
+      // Redirect theo role
       if (user.role === "ADMIN") {
         navigate("/admin");
-      } else {
+      } else if (user.role === "TEACHER") {
+        navigate("/teacher"); 
+      }
+      else {
         navigate("/");
       }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Có lỗi xảy ra");
+    } catch (err: any) {
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Có lỗi xảy ra");
+      }
     } finally {
       setIsLoading(false);
     }
