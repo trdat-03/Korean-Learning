@@ -44,8 +44,9 @@ import AdminChatPage from "./pages/admin/AdminChatPage";
 // Teacher imports
 import { TeacherLayout } from "./components/teacher/TeacherLayout";
 import { TeacherCourseList } from "./pages/teacher/TeacherCourseList";
-import { TeacherCourseCreate } from "./pages/teacher/TeacherCourseCreate";
+import TeacherCourseCreate from "./pages/teacher/TeacherCourseCreate";
 import { TeacherCourseDetail } from "./pages/teacher/TeacherCourseDetail";
+import TeacherLessonDetail from "./pages/teacher/TeacherLessonDetail";
 import { TeacherCourseEdit } from "./pages/teacher/TeacherCourseEdit";
 import { TeacherStudentList } from "./pages/teacher/TeacherStudentList";
 
@@ -108,6 +109,7 @@ function App() {
             <Route path="courses/create" element={<TeacherCourseCreate />} />
             <Route path="courses/:id" element={<TeacherCourseDetail />} />
             <Route path="courses/edit/:id" element={<TeacherCourseEdit />} />
+            <Route path="lessons/:id" element={<TeacherLessonDetail />} />
             <Route path="students" element={<TeacherStudentList />} />
           </Route>
 

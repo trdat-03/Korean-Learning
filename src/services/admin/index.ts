@@ -16,5 +16,8 @@ export type {
 export * from './categoryService';
 export * from './lessonService';
 export * from './dashboardService';
+export * from './courseCategoryService';
+export * from './teacherService';
+export * from './courseManagementService';
 
 export type { AdminTransactionDTO, AdminTransactionStats } from './adminTransactionService';

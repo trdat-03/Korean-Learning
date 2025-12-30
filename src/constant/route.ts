@@ -74,6 +74,9 @@ export const ROUTES = {
       CREATE: "/teacher/courses/create",
       EDIT: "/teacher/courses/edit/:id"
     },
+    LESSONS: {
+      DETAIL: "/teacher/lessons/:id"
+    },
     STUDENTS: {
       LIST: "/teacher/students",
       DETAIL: "/teacher/students/:id"

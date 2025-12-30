@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle } from "lucide-react";
-import { lessonService } from "@/services/learning";
+import { adminLessonService } from "@/services/admin/lessonService";
+import type { LessonDetailDTO } from "@/services/admin/lessonService";
 
 interface Vocabulary {
   id: number | null;
@@ -61,8 +62,20 @@ export default function TeacherLessonDetail() {
     if (!id) return;
     
     setLoading(true);
-    lessonService.getLessonById(Number(id))
-      .then((data) => setLesson(data))
+    adminLessonService.getSimpleLessonDetail(Number(id))
+      .then((data) => {
+        // Convert LessonDetailDTO to LessonDetail for compatibility
+        const lesson = {
+          id: data.id,
+          title: data.title,
+          orderNumber: data.orderNumber,
+          vocabularyCount: data.vocabularyCount,
+          grammarCount: data.grammarCount,
+          vocabularies: [],
+          grammars: []
+        };
+        setLesson(lesson);
+      })
       .catch((err) => setError(err.message || "Không thể lấy dữ liệu"))
       .finally(() => setLoading(false));
   }, [id]);
@@ -84,8 +97,9 @@ export default function TeacherLessonDetail() {
       };
       
       console.log('Sending lesson data:', lessonData); // Debug log
-      await lessonService.updateLesson(Number(id), lessonData);
-      setMessage("Đã lưu bài học thành công!");
+      // TODO: Implement lesson update API call
+      // await adminLessonService.updateLesson(Number(id), lessonData);
+      setMessage("Chức năng cập nhật bài học đang được phát triển!");
       setAlertType('success');
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 2000);

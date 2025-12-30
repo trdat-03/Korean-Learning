@@ -13,134 +13,102 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
   Save, 
-  Eye, 
-  Upload, 
-  X, 
-  Plus,
-  BookOpen,
-  Users,
-  Target
+  Loader2
 } from 'lucide-react';
 import { ROUTES } from '@/constant/route';
-import type { Course } from '@/models/Course';
+import { useTeacherCourseFormData } from '@/hooks/teacher/useTeacherCourseFormData';
+import { teacherCourseManagementService } from '@/services/teacher/teacherCourseManagementService';
 
-interface CourseFormData {
+interface TeacherCourseFormData {
   title: string;
   description: string;
+  image: string;
   categoryId: string;
-  price: number;
-  duration: string;
-  level: string;
-  tags: string[];
-  objectives: string[];
-  requirements: string[];
-  thumbnail?: File;
-  status: Course['status'];
 }
 
-const categories = [
-  { id: '1', name: 'Cơ Bản' },
-  { id: '2', name: 'Trung Cấp' },
-  { id: '3', name: 'Cao Cấp' },
-  { id: '4', name: 'Ngữ Pháp' },
-  { id: '5', name: 'Từ Vựng' },
-  { id: '6', name: 'Giao Tiếp' },
-];
-
-const levels = [
-  { value: 'beginner', label: 'Người mới bắt đầu' },
-  { value: 'intermediate', label: 'Trung cấp' },
-  { value: 'advanced', label: 'Nâng cao' },
-];
-
-export const TeacherCourseCreate: React.FC = () => {
+export default function TeacherCourseCreate() {
   const navigate = useNavigate();
   const { isTeacher, currentUser } = useTeacherId();
-  const [formData, setFormData] = useState<CourseFormData>({
+  const { categories, currentTeacher, isLoading, error } = useTeacherCourseFormData();
+  const [formData, setFormData] = useState<TeacherCourseFormData>({
     title: '',
     description: '',
-    categoryId: '',
-    price: 0,
-    duration: '',
-    level: '',
-    tags: [],
-    objectives: [''],
-    requirements: [''],
-    status: 'draft',
+    image: '',
+    categoryId: ''
   });
-  const [currentTag, setCurrentTag] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (field: keyof CourseFormData, value: string | number | Course['status']) => {
+  const handleInputChange = (field: keyof TeacherCourseFormData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleArrayAdd = (field: 'objectives' | 'requirements') => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: [...prev[field], '']
-    }));
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!isFormValid || !isTeacher || !currentUser || !currentTeacher) return;
+    
+    if (!formData.title.trim() || !formData.description.trim()) {
+      alert('Vui lòng nhập tên khóa học và mô tả');
+      return;
+    }
 
-  const handleArrayChange = (field: 'objectives' | 'requirements', index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
-    }));
-  };
+    try {
+      setIsSubmitting(true);
+      
+      const courseData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        image: formData.image.trim(),
+        categoryId: formData.categoryId ? parseInt(formData.categoryId) : null,
+        teacherId: currentTeacher.id // Sử dụng ID của teacher đang đăng nhập
+      };
 
-  const handleArrayRemove = (field: 'objectives' | 'requirements', index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleAddTag = () => {
-    if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, currentTag.trim()]
-      }));
-      setCurrentTag('');
+      const result = await teacherCourseManagementService.createCourse(courseData);
+      
+      alert('Tạo khóa học thành công!');
+      console.log('Course created:', result);
+      
+      // Quay lại danh sách khóa học
+      navigate(ROUTES.TEACHER.COURSES.LIST);
+      
+    } catch (error) {
+      console.error('Error creating course:', error);
+      alert('Có lỗi xảy ra khi tạo khóa học. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }));
-  };
+  const isFormValid = formData.title.trim() && formData.description.trim();
 
-  const handleSubmit = async (status: Course['status']) => {
-    if (!isFormValid || !isTeacher || !currentUser) return;
-    
-    // Course creation is not yet supported by the backend
-    alert('Tính năng tạo khóa học mới hiện chưa được hỗ trợ bởi hệ thống backend. Vui lòng thử lại sau.');
-    
-    // TODO: Implement when backend supports course creation
-    console.log('Course creation attempted:', {
-      title: formData.title,
-      description: formData.description,
-      categoryId: Number(formData.categoryId),
-      price: formData.price,
-      status,
-      level: formData.level,
-      duration: formData.duration,
-      requirements: formData.requirements.filter(req => req.trim()),
-      objectives: formData.objectives.filter(obj => obj.trim()),
-      tags: formData.tags,
-    });
-  };
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin mr-2" />
+          <span>Đang tải dữ liệu...</span>
+        </div>
+      </div>
+    );
+  }
 
-  const isFormValid = formData.title.trim() && formData.description.trim() && formData.categoryId;
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-red-600">
+            Lỗi: {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -159,285 +127,126 @@ export const TeacherCourseCreate: React.FC = () => {
             <p className="text-gray-600">Tạo khóa học giảng dạy cho học sinh của bạn</p>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => handleSubmit('draft')}
-            disabled={!isFormValid}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Lưu nháp
-          </Button>
-          <Button
-            onClick={() => handleSubmit('active')}
-            disabled={!isFormValid}
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Xuất bản
-          </Button>
-        </div>
+        <Button
+          onClick={handleSubmit}
+          disabled={!isFormValid || isSubmitting}
+          className="bg-red-600 hover:bg-red-700"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Đang tạo...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 mr-2" />
+              Tạo khóa học
+            </>
+          )}
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <BookOpen className="w-5 h-5 mr-2" />
-                Thông tin cơ bản
-              </CardTitle>
+              <CardTitle>Thông tin cơ bản</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="title">Tên khóa học *</Label>
+                <Label htmlFor="title">Tên khóa học</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder="Nhập tên khóa học..."
-                  className="mt-1"
+                  placeholder="VD: Tiếng Hàn cơ bản"
+                  required
                 />
               </div>
-
               <div>
-                <Label htmlFor="description">Mô tả khóa học *</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder="Mô tả chi tiết về khóa học..."
-                  rows={4}
-                  className="mt-1"
+                <Label htmlFor="categoryId">Danh mục (tùy chọn)</Label>
+                <Select
+                  value={formData.categoryId}
+                  onValueChange={(value) => handleInputChange('categoryId', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {categories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Hiển thị thông tin giảng viên */}
+              <div>
+                <Label>Giảng viên</Label>
+                <Input
+                  value={currentTeacher?.name || 'Đang tải...'}
+                  readOnly
+                  className="bg-gray-50 cursor-not-allowed"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Khóa học sẽ được tạo dưới tên: {currentTeacher?.name}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Media */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Hình ảnh</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="image">URL hình ảnh</Label>
+                <Input
+                  id="image"
+                  value={formData.image}
+                  onChange={(e) => handleInputChange('image', e.target.value)}
+                  placeholder="VD: https://example.com/image.jpg"
                 />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="category">Danh mục *</Label>
-                  <Select value={formData.categoryId} onValueChange={(value) => handleInputChange('categoryId', value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Chọn danh mục" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="level">Trình độ</Label>
-                  <Select value={formData.level} onValueChange={(value) => handleInputChange('level', value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Chọn trình độ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {levels.map(level => (
-                        <SelectItem key={level.value} value={level.value}>
-                          {level.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price">Giá khóa học (VND)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => handleInputChange('price', Number(e.target.value))}
-                    placeholder="0"
-                    className="mt-1"
+              <div>
+                <Label>Xem trước</Label>
+                <div className="p-4 bg-gray-100 rounded-md">
+                  <img
+                    src={formData.image || "https://placehold.co/200x150"}
+                    alt="Thumbnail preview"
+                    className="w-full object-contain rounded-md"
+                    style={{ maxHeight: "150px" }}
+                    onError={(e) => {
+                      e.currentTarget.src = "https://placehold.co/200x150";
+                    }}
                   />
                 </div>
-
-                <div>
-                  <Label htmlFor="duration">Thời lượng</Label>
-                  <Input
-                    id="duration"
-                    value={formData.duration}
-                    onChange={(e) => handleInputChange('duration', e.target.value)}
-                    placeholder="VD: 30 giờ, 10 tuần..."
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Course Objectives */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Target className="w-5 h-5 mr-2" />
-                Mục tiêu khóa học
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {formData.objectives.map((objective, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Input
-                      value={objective}
-                      onChange={(e) => handleArrayChange('objectives', index, e.target.value)}
-                      placeholder="Nhập mục tiêu..."
-                      className="flex-1"
-                    />
-                    {formData.objectives.length > 1 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleArrayRemove('objectives', index)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleArrayAdd('objectives')}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Thêm mục tiêu
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Requirements */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                Yêu cầu đầu vào
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {formData.requirements.map((requirement, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Input
-                      value={requirement}
-                      onChange={(e) => handleArrayChange('requirements', index, e.target.value)}
-                      placeholder="Nhập yêu cầu..."
-                      className="flex-1"
-                    />
-                    {formData.requirements.length > 1 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleArrayRemove('requirements', index)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleArrayAdd('requirements')}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Thêm yêu cầu
-                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Tags */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tags</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex space-x-2">
-                  <Input
-                    value={currentTag}
-                    onChange={(e) => setCurrentTag(e.target.value)}
-                    placeholder="Nhập tag..."
-                    onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
-                  />
-                  <Button size="sm" onClick={handleAddTag}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formData.tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                      {tag}
-                      <X 
-                        className="w-3 h-3 cursor-pointer" 
-                        onClick={() => handleRemoveTag(tag)}
-                      />
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Thumbnail */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Ảnh đại diện</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                <p className="text-sm text-gray-600">
-                  Kéo thả ảnh hoặc nhấn để chọn
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  PNG, JPG tối đa 2MB
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Preview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Xem trước</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Trạng thái:</span>
-                  <Badge variant="outline">Bản nháp</Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Danh mục:</span>
-                  <span>{categories.find(c => c.id === formData.categoryId)?.name || 'Chưa chọn'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Trình độ:</span>
-                  <span>{levels.find(l => l.value === formData.level)?.label || 'Chưa chọn'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Giá:</span>
-                  <span>{formData.price.toLocaleString('vi-VN')} VND</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        {/* Description */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Mô tả khóa học</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              placeholder="Mô tả chi tiết về khóa học..."
+              rows={4}
+              required
+            />
+          </CardContent>
+        </Card>
+      </form>
     </div>
   );
-};
+}

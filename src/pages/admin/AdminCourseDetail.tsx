@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { CreateLessonDialog } from "@/components/admin/CreateLessonDialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 import { adminCourseService } from "@/services/admin/courseService";
 import type { CourseDetail } from "@/models/CourseDetail";
+import type { LessonDetailDTO } from "@/services/admin/lessonService";
 
 
 export default function AdminCourseDetail() {
@@ -50,6 +52,12 @@ export default function AdminCourseDetail() {
   const refresh = useCallback(() => {
     fetchCourseDetail();
   }, [fetchCourseDetail]);
+
+  // Xử lý khi tạo bài học thành công
+  const handleLessonCreated = (newLesson: LessonDetailDTO) => {
+    // Refresh lại dữ liệu course để cập nhật danh sách bài học
+    fetchCourseDetail();
+  };
 
   useEffect(() => {
     if (id) {
@@ -264,13 +272,23 @@ export default function AdminCourseDetail() {
 
           <TabsContent value="lessons">
             <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Danh sách bài học</CardTitle>
+                  <CreateLessonDialog
+                    courseId={course.id}
+                    courseName={course.title}
+                    onLessonCreated={handleLessonCreated}
+                  />
+                </div>
+              </CardHeader>
               <CardContent>
                 <div className="space-y-3 sm:space-y-4">
                   {course.lessons && course.lessons.length > 0 ? (
                     course.lessons.map((lesson, index) => (
                       <div
                         key={lesson.id}
-                        className="flex items-center justify-between p-3 sm:p-4 border rounded-lg"
+                        className="flex items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
                         onClick={() => navigate(`/admin/lessons/${lesson.id}`)}
                       >
                         <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
@@ -289,7 +307,14 @@ export default function AdminCourseDetail() {
                       </div>
                     ))
                   ) : (
-                    <div>Chưa có bài học nào.</div>
+                    <div className="text-center py-8 text-gray-500">
+                      <p className="mb-4">Chưa có bài học nào.</p>
+                      <CreateLessonDialog
+                        courseId={course.id}
+                        courseName={course.title}
+                        onLessonCreated={handleLessonCreated}
+                      />
+                    </div>
                   )}
                 </div>
               </CardContent>

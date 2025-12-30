@@ -14,10 +14,13 @@ import {
   Edit,
   Users,
   Loader2,
+  Plus,
 } from "lucide-react";
 import { adminCourseService } from "@/services/admin/courseService";
 import type { CourseDetail } from "@/models/CourseDetail";
 import { ROUTES } from "@/constant/route";
+import { CreateLessonDialog } from "@/components/teacher/CreateLessonDialog";
+import type { LessonDetailDTO } from "@/services/admin/lessonService";
 
 export const TeacherCourseDetail: React.FC = () => {
   const { id } = useParams();
@@ -26,6 +29,32 @@ export const TeacherCourseDetail: React.FC = () => {
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showCreateLesson, setShowCreateLesson] = useState(false);
+
+  const handleLessonCreated = (newLesson: LessonDetailDTO) => {
+    if (course && course.lessons) {
+      // Convert LessonDetailDTO to LessonDetailType
+      const lessonDetailType = {
+        id: newLesson.id,
+        title: newLesson.title,
+        description: '', // Default empty description
+        orderNumber: newLesson.orderNumber,
+        vocabularyCount: newLesson.vocabularyCount,
+        grammarCount: newLesson.grammarCount,
+        creatorId: 0, // Default creator ID
+        vocabularies: [],
+        grammars: []
+      };
+      
+      const updatedCourse = {
+        ...course,
+        lessons: [...course.lessons, lessonDetailType],
+        lessonCount: course.lessonCount + 1
+      };
+      setCourse(updatedCourse);
+    }
+    setShowCreateLesson(false);
+  };
 
   const fetchCourseDetail = useCallback(async () => {
     if (!id) return;
@@ -263,13 +292,21 @@ export const TeacherCourseDetail: React.FC = () => {
         <TabsContent value="lessons">
           <Card>
             <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Danh sách bài học</h3>
+                <Button onClick={() => setShowCreateLesson(true)} size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Tạo bài học
+                </Button>
+              </div>
+              
               <div className="space-y-3 sm:space-y-4">
                 {course.lessons && course.lessons.length > 0 ? (
                   course.lessons.map((lesson, index) => (
                     <div
                       key={lesson.id}
-                      className="flex items-center justify-between p-3 sm:p-4 border rounded-lg"
-                      onClick={() => navigate(`/teacher/lessons/${lesson.id}`)}
+                      className="flex items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                      onClick={() => navigate(ROUTES.TEACHER.LESSONS.DETAIL.replace(':id', lesson.id.toString()))}
                     >
                       <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
                         <div className="w-12 h-9 sm:w-16 sm:h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
@@ -287,7 +324,19 @@ export const TeacherCourseDetail: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div>Chưa có bài học nào.</div>
+                  <div className="text-center py-8">
+                    <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Chưa có bài học nào
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Hãy tạo bài học đầu tiên cho khóa học của bạn
+                    </p>
+                    <Button onClick={() => setShowCreateLesson(true)} size="sm">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Tạo bài học đầu tiên
+                    </Button>
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -318,6 +367,15 @@ export const TeacherCourseDetail: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Create Lesson Dialog */}
+      <CreateLessonDialog
+        isOpen={showCreateLesson}
+        onClose={() => setShowCreateLesson(false)}
+        courseId={Number(id)}
+        courseName={course.title}
+        onLessonCreated={handleLessonCreated}
+      />
     </div>
   );
 };

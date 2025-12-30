@@ -24,13 +24,16 @@ import {
   Users,
   BookOpen,
   Loader2,
+  Trash2,
 } from 'lucide-react';
 import { ROUTES } from '@/constant/route';
 import { useTeacherCourses } from '@/hooks/teacher/useTeacherCourses';
 import { useTeacherId } from '@/hooks/teacher/useTeacherId';
+import { teacherCourseManagementService } from '@/services/teacher/teacherCourseManagementService';
 
 export const TeacherCourseList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [deletingCourseId, setDeletingCourseId] = useState<number | null>(null);
   const { teacherId, isTeacher, currentUser } = useTeacherId();
   
   const { 
@@ -51,6 +54,24 @@ export const TeacherCourseList: React.FC = () => {
                          course.categoryName?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   }) || [];
+
+  const handleDeleteCourse = async (courseId: number, courseTitle: string) => {
+    if (!confirm(`Bạn có chắc chắn muốn xóa khóa học "${courseTitle}"?\n\nHành động này không thể hoàn tác.`)) {
+      return;
+    }
+
+    try {
+      setDeletingCourseId(courseId);
+      await teacherCourseManagementService.deleteCourse(courseId);
+      refresh(); // Refresh danh sách sau khi xóa
+      alert('Xóa khóa học thành công!');
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      alert('Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.');
+    } finally {
+      setDeletingCourseId(null);
+    }
+  };
 
   if (!isTeacher || !currentUser) {
     return (
@@ -191,7 +212,19 @@ export const TeacherCourseList: React.FC = () => {
                           Xem chi tiết
                         </Link>
                       </DropdownMenuItem>
-                      {/* Note: Edit and Delete actions are disabled as they're not yet supported by the backend */}
+                      <DropdownMenuItem 
+                        onClick={() => handleDeleteCourse(course.id, course.title)}
+                        className="text-red-600 hover:text-red-700 focus:text-red-700"
+                        disabled={deletingCourseId === course.id}
+                      >
+                        {deletingCourseId === course.id ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4 mr-2" />
+                        )}
+                        {deletingCourseId === course.id ? 'Đang xóa...' : 'Xóa khóa học'}
+                      </DropdownMenuItem>
+                      {/* Note: Edit action is disabled as it's not yet supported by the backend */}
                       {/* <DropdownMenuItem asChild>
                         <Link to={ROUTES.TEACHER.COURSES.EDIT.replace(':id', course.id.toString())}>
                           <Edit className="w-4 h-4 mr-2" />

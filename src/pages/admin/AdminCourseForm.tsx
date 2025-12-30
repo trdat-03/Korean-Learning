@@ -11,20 +11,125 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, ArrowLeft,  } from "lucide-react";
+import { Save, ArrowLeft, Loader2 } from "lucide-react";
+import { useCourseFormData } from "@/hooks/admin/useCourseFormData";
+import { courseManagementService } from "@/services/admin/courseManagementService";
+import { useState } from "react";
+
+interface CourseFormData {
+  title: string;
+  description: string;
+  image: string;
+  teacherId: string;
+  categoryId: string;
+}
 
 export default function AdminCourseForm() {
+  const { categories, teachers, isLoading, error } = useCourseFormData();
+  const [formData, setFormData] = useState<CourseFormData>({
+    title: '',
+    description: '',
+    image: '',
+    teacherId: '',
+    categoryId: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (field: keyof CourseFormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title.trim() || !formData.description.trim()) {
+      alert('Vui lòng nhập tên khóa học và mô tả');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      
+      const courseData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        image: formData.image.trim(),
+        teacherId: formData.teacherId ? parseInt(formData.teacherId) : null,
+        categoryId: formData.categoryId ? parseInt(formData.categoryId) : null
+      };
+
+      const result = await courseManagementService.createCourse(courseData);
+      
+      alert('Tạo khóa học thành công!');
+      console.log('Course created:', result);
+      
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        image: '',
+        teacherId: '',
+        categoryId: ''
+      });
+      
+    } catch (error) {
+      console.error('Error creating course:', error);
+      alert('Có lỗi xảy ra khi tạo khóa học. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <AdminLayout title="Tạo khóa học mới">
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin mr-2" />
+          <span>Đang tải dữ liệu...</span>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout title="Tạo khóa học mới">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-red-600">
+            Lỗi: {error}
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout title="Tạo khóa học mới">
-      <form className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex items-center justify-between">
           <Button type="button" variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Quay lại
           </Button>
-          <Button type="button" className="bg-red-600 hover:bg-red-700">
-            <Save className="w-4 h-4 mr-2" />
-            Tạo khóa học
+          <Button 
+            type="submit" 
+            className="bg-red-600 hover:bg-red-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Đang tạo...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Tạo khóa học
+              </>
+            )}
           </Button>
         </div>
 
@@ -39,106 +144,78 @@ export default function AdminCourseForm() {
                 <Label htmlFor="title">Tên khóa học</Label>
                 <Input
                   id="title"
-                  value="Khóa học tiếng Hàn sơ cấp"
-                  placeholder="VD: Tiếng Nhật cơ bản N5"
-                  readOnly
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  placeholder="VD: Tiếng Hàn cơ bản"
+                  required
                 />
               </div>
               <div>
-                <Label htmlFor="category">Danh mục</Label>
-                <Select value="han">
+                <Label htmlFor="categoryId">Danh mục (tùy chọn)</Label>
+                <Select
+                  value={formData.categoryId}
+                  onValueChange={(value) => handleInputChange('categoryId', value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Chọn danh mục" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    <SelectItem value="han">Tiếng Hàn</SelectItem>
-                    <SelectItem value="nhat">Tiếng Nhật</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="level">Cấp độ</Label>
-                <Select value="Cơ bản">
+                <Label htmlFor="teacherId">Giảng viên (tùy chọn)</Label>
+                <Select
+                  value={formData.teacherId}
+                  onValueChange={(value) => handleInputChange('teacherId', value)}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn cấp độ" />
+                    <SelectValue placeholder="Chọn giảng viên" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    <SelectItem value="Cơ bản">Cơ bản</SelectItem>
-                    <SelectItem value="Trung cấp">Trung cấp</SelectItem>
-                    <SelectItem value="Nâng cao">Nâng cao</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="duration">Thời lượng</Label>
-                <Input
-                  id="duration"
-                  value="3 tháng"
-                  placeholder="VD: 8 tuần"
-                  readOnly
-                />
-              </div>
-              <div>
-                <Label htmlFor="instructor">Giảng viên</Label>
-                <Input
-                  id="instructor"
-                  value="Nguyễn Văn A"
-                  placeholder="VD: Tanaka Sensei"
-                  readOnly
-                />
-              </div>
-              <div>
-                <Label htmlFor="status">Trạng thái</Label>
-                <Select value="active">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn trạng thái" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="active">Kích hoạt</SelectItem>
-                    <SelectItem value="inactive">Không kích hoạt</SelectItem>
-                    <SelectItem value="draft">Bản nháp</SelectItem>
+                    {teachers.map((teacher) => (
+                      <SelectItem key={teacher.value} value={teacher.value}>
+                        {teacher.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
             </CardContent>
           </Card>
 
-          {/* Pricing and Media */}
+          {/* Media */}
           <Card>
             <CardHeader>
-              <CardTitle>Giá và hình ảnh</CardTitle>
+              <CardTitle>Hình ảnh</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="price">Giá hiện tại</Label>
+                <Label htmlFor="image">URL hình ảnh</Label>
                 <Input
-                  id="price"
-                  value="1.200.000đ"
-                  placeholder="VD: 1.299.000đ"
-                  readOnly
+                  id="image"
+                  value={formData.image}
+                  onChange={(e) => handleInputChange('image', e.target.value)}
+                  placeholder="VD: https://example.com/image.jpg"
                 />
               </div>
               <div>
-                <Label htmlFor="originalPrice">Giá gốc (tùy chọn)</Label>
-                <Input
-                  id="originalPrice"
-                  value="1.500.000đ"
-                  placeholder="VD: 1.899.000đ"
-                  readOnly
-                />
-              </div>
-              <div>
-                <Label htmlFor="image">Hình ảnh</Label>
-                <div className="p-4 bg-gray-100 rounded-md space-y-2">
+                <Label>Xem trước</Label>
+                <div className="p-4 bg-gray-100 rounded-md">
                   <img
-                    src="https://placehold.co/200x150"
+                    src={formData.image || "https://placehold.co/200x150"}
                     alt="Thumbnail preview"
                     className="w-full object-contain rounded-md"
                     style={{ maxHeight: "150px" }}
+                    onError={(e) => {
+                      e.currentTarget.src = "https://placehold.co/200x150";
+                    }}
                   />
-                  <Button type="button" variant="outline" className="mt-2">
-                    Thay đổi thumbnail
-                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -152,64 +229,12 @@ export default function AdminCourseForm() {
           </CardHeader>
           <CardContent>
             <Textarea
-              value="Khóa học tiếng Hàn dành cho người mới bắt đầu."
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Mô tả chi tiết về khóa học..."
               rows={4}
-              readOnly
+              required
             />
-          </CardContent>
-        </Card>
-
-        {/* Features */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Tính năng khóa học</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Input
-                value="Học bảng chữ cái tiếng Hàn"
-                placeholder="VD: Học 2 bảng chữ cái cơ bản"
-                readOnly
-              />
-              <Button type="button" variant="outline" disabled>
-                Xóa
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Input
-                value="Phát âm cơ bản"
-                placeholder="VD: Học 2 bảng chữ cái cơ bản"
-                readOnly
-              />
-              <Button type="button" variant="outline" disabled>
-                Xóa
-              </Button>
-            </div>
-            <Button type="button" variant="outline" disabled>
-              Thêm tính năng
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Thông tin khóa học</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Input
-                value="Không yêu cầu kiến thức nền"
-                placeholder="VD: Học 2 bảng chữ cái cơ bản"
-                readOnly
-              />
-              <Button type="button" variant="outline" disabled>
-                Xóa
-              </Button>
-            </div>
-            <Button type="button" variant="outline" disabled>
-              Thêm thông tin
-            </Button>
           </CardContent>
         </Card>
       </form>

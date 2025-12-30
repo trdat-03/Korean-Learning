@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { useAdminCourses } from "@/hooks/admin/useAdminCourses";
+import { useDeleteCourse } from "@/hooks/admin/useDeleteCourse";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +32,17 @@ import {
 
 export const AdminCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { courses, loading, error } = useAdminCourses();
+  const { courses, loading, error, actions } = useAdminCourses();
+  const { isDeleting, deleteCourse } = useDeleteCourse();
+
+  // Xử lý xóa khóa học
+  const handleDeleteCourse = async (courseId: number, courseTitle: string) => {
+    const success = await deleteCourse(courseId, courseTitle);
+    if (success) {
+      // Refresh dữ liệu sau khi xóa thành công
+      actions.refresh();
+    }
+  };
  
   const filteredCourses = courses.filter(
     (course) =>
@@ -135,9 +146,13 @@ export const AdminCourses = () => {
                             Chỉnh sửa
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteCourse(course.id, course.title)}
+                          disabled={isDeleting}
+                          className="text-red-600 focus:text-red-600"
+                        >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa
+                          {isDeleting ? "Đang xóa..." : "Xóa"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -181,9 +196,13 @@ export const AdminCourses = () => {
                             Chỉnh sửa
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteCourse(course.id, course.title)}
+                          disabled={isDeleting}
+                          className="text-red-600 focus:text-red-600"
+                        >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa
+                          {isDeleting ? "Đang xóa..." : "Xóa"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -219,6 +238,16 @@ export const AdminCourses = () => {
                         Chỉnh sửa
                       </Button>
                     </Link>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => handleDeleteCourse(course.id, course.title)}
+                      disabled={isDeleting}
+                    >
+                      <Trash2 className="mr-1 h-3 w-3" />
+                      {isDeleting ? "Đang xóa..." : "Xóa"}
+                    </Button>
                   </div>
                 </div>
               </CardContent>

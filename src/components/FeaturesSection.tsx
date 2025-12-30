@@ -15,22 +15,27 @@ import {
 const FeaturesSection = () => {
   const features = [
     {
-      icon: BookOpen,
-      title: "Flashcard thông minh",
-      description: "Tạo và học từ vựng với thẻ flashcard tương tác, có thể nhập hoặc phân tích hình ảnh bằng AI",
-      color: "from-red-500 to-rose-600",
-      bgColor: "bg-red-50",
-      iconColor: "text-red-600"
-    },
-    {
+      icon: Users,
+      title: "Khóa học đa cấp độ",
+      description: "Hệ thống bài học từ sơ cấp đến cao cấp với từ vựng và ngữ pháp có cấu trúc",
+      color: "from-yellow-500 to-orange-500",
+      bgColor: "bg-yellow-50",
+      iconColor: "text-yellow-600"
+    }, {
+      icon: Clock,
+      title: "Luyện tập đa dạng",
+      description: "Hệ thống ôn tập với nhiều dạng bài tập: trắc nghiệm, tự luận, đúng sai",
+      color: "from-purple-500 to-indigo-500",
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600"
+    },{
       icon: Target,
       title: "Trò chơi ghép từ",
       description: "Luyện tập từ vựng qua trò chơi ghép từ tiếng Hàn - tiếng Việt có thời gian thử thách",
       color: "from-orange-500 to-red-500",
       bgColor: "bg-orange-50",
       iconColor: "text-orange-600"
-    },
-    {
+    },  {
       icon: Brain,
       title: "Luyện ngữ pháp AI",
       description: "AI thông minh kiểm tra ngữ pháp, sửa lỗi và đưa ra gợi ý cải thiện chi tiết",
@@ -39,37 +44,33 @@ const FeaturesSection = () => {
       iconColor: "text-pink-600"
     },
     {
-      icon: Users,
-      title: "Khóa học đa cấp độ",
-      description: "Hệ thống bài học từ sơ cấp đến cao cấp với từ vựng và ngữ pháp có cấu trúc",
-      color: "from-yellow-500 to-orange-500",
-      bgColor: "bg-yellow-50",
-      iconColor: "text-yellow-600"
+      icon: BookOpen,
+      title: "Flashcard thông minh",
+      description: "Tạo và học từ vựng với thẻ flashcard tương tác, có thể nhập hoặc phân tích hình ảnh bằng AI",
+      color: "from-red-500 to-rose-600",
+      bgColor: "bg-red-50",
+      iconColor: "text-red-600"
     },
-    {
-      icon: MessageSquare,
-      title: "Chat AI thông minh",
-      description: "Chat trực tiếp với AI trợ giảng và giảng viên để được hỗ trợ học tập 24/7",
-      color: "from-emerald-500 to-teal-500",
-      bgColor: "bg-emerald-50",
-      iconColor: "text-emerald-600"
-    },
-    {
+    
+  {
       icon: Zap,
-      title: "Phân tích hình ảnh AI",
-      description: "Công nghệ AI phân tích hình ảnh để tự động tạo từ vựng tiếng Hàn từ ảnh",
+      title: "Nâng cấp tài khoản",
+      description: "Nâng cấp tài khoản để sử dụng các tính năng nâng cao không giới hạn",
       color: "from-blue-500 to-indigo-500",
       bgColor: "bg-blue-50",
       iconColor: "text-blue-600"
     },
+    
     {
-      icon: Clock,
-      title: "Luyện tập đa dạng",
-      description: "Hệ thống ôn tập với nhiều dạng bài tập: trắc nghiệm, tự luận, flashcard",
-      color: "from-purple-500 to-indigo-500",
-      bgColor: "bg-purple-50",
-      iconColor: "text-purple-600"
+      icon: MessageSquare,
+      title: "Trò chuyện cùng AI thông minh",
+      description: "Mô phỏng các cuộc trò chuyện thực tế với AI thông qua các tình huống thực tế. Nâng cao kỹ năng giao tiếp.",
+      color: "from-emerald-500 to-teal-500",
+      bgColor: "bg-emerald-50",
+      iconColor: "text-emerald-600"
     },
+    
+   
     {
       icon: Trophy,
       title: "Bài kiểm tra AI",

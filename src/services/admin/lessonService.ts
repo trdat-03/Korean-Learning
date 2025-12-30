@@ -17,6 +17,24 @@ export interface AdminLesson {
   updatedAt: string;
 }
 
+// Interface cho API tạo bài học đơn giản
+export interface LessonRequestDTO {
+  courseId: number;
+  title: string;
+}
+
+export interface LessonDetailDTO {
+  id: number;
+  title: string;
+  courseId: number;
+  courseName: string;
+  orderNumber: number;
+  vocabularyCount: number;
+  grammarCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AdminLessonData {
   id?: number;
   title: string;
@@ -102,59 +120,83 @@ export interface AdminLessonAttachment {
 export const adminLessonService = {
   // Get all lessons
   async getLessons(): Promise<AdminLesson[]> {
-    const response = await api.get('/api/admin/lessons');
+    const response = await api.get('/admin/lessons');
     return response.data;
   },
 
   // Get lesson statistics
   async getLessonStats(): Promise<AdminLessonStats> {
-    const response = await api.get('/api/admin/lessons/statistics');
+    const response = await api.get('/admin/lessons/statistics');
     return response.data;
   },
 
   // Get lesson detail
   async getLessonDetail(lessonId: number): Promise<AdminLessonDetail> {
-    const response = await api.get(`/api/admin/lessons/${lessonId}`);
+    const response = await api.get(`/admin/lessons/${lessonId}`);
     return response.data;
   },
 
   // Create new lesson
   async createLesson(lessonData: AdminLessonData): Promise<AdminLesson> {
-    const response = await api.post('/api/admin/lessons', lessonData);
+    const response = await api.post('/admin/lessons', lessonData);
+    return response.data;
+  },
+
+  // Create simple lesson - sử dụng endpoint đúng từ Spring Boot controller
+  async createSimpleLesson(data: LessonRequestDTO): Promise<LessonDetailDTO> {
+    try {
+      console.log('Sending request to /lessons with data:', data);
+      const response = await api.post('/lessons', data);
+      console.log('Response from server:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error in createSimpleLesson:', error);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response: { data: unknown; status: number } };
+        console.error('Error response data:', axiosError.response.data);
+        console.error('Error response status:', axiosError.response.status);
+      }
+      throw error;
+    }
+  },
+
+  // Get simple lesson detail
+  async getSimpleLessonDetail(id: number): Promise<LessonDetailDTO> {
+    const response = await api.get(`/lessons/${id}`);
     return response.data;
   },
 
   // Update lesson
   async updateLesson(lessonId: number, lessonData: Partial<AdminLessonData>): Promise<AdminLesson> {
-    const response = await api.put(`/api/admin/lessons/${lessonId}`, lessonData);
+    const response = await api.put(`/admin/lessons/${lessonId}`, lessonData);
     return response.data;
   },
 
   // Delete lesson
   async deleteLesson(lessonId: number): Promise<void> {
-    await api.delete(`/api/admin/lessons/${lessonId}`);
+    await api.delete(`/admin/lessons/${lessonId}`);
   },
 
   // Update lesson status
   async updateLessonStatus(lessonId: number, status: 'published' | 'draft' | 'archived'): Promise<void> {
-    await api.patch(`/api/admin/lessons/${lessonId}/status`, { status });
+    await api.patch(`/admin/lessons/${lessonId}/status`, { status });
   },
 
   // Get lessons by course
   async getLessonsByCourse(courseId: number): Promise<AdminLesson[]> {
-    const response = await api.get(`/api/admin/lessons/course/${courseId}`);
+    const response = await api.get(`/admin/lessons/course/${courseId}`);
     return response.data;
   },
 
   // Get lesson students
   async getLessonStudents(lessonId: number): Promise<AdminLessonStudent[]> {
-    const response = await api.get(`/api/admin/lessons/${lessonId}/students`);
+    const response = await api.get(`/admin/lessons/${lessonId}/students`);
     return response.data;
   },
 
   // Get lesson progress
   async getLessonProgress(lessonId: number): Promise<AdminLessonProgress[]> {
-    const response = await api.get(`/api/admin/lessons/${lessonId}/progress`);
+    const response = await api.get(`/admin/lessons/${lessonId}/progress`);
     return response.data;
   },
 
@@ -163,7 +205,7 @@ export const adminLessonService = {
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await api.post(`/api/admin/lessons/${lessonId}/attachments`, formData, {
+    const response = await api.post(`/admin/lessons/${lessonId}/attachments`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -173,23 +215,23 @@ export const adminLessonService = {
 
   // Delete lesson attachment
   async deleteAttachment(lessonId: number, attachmentId: number): Promise<void> {
-    await api.delete(`/api/admin/lessons/${lessonId}/attachments/${attachmentId}`);
+    await api.delete(`/admin/lessons/${lessonId}/attachments/${attachmentId}`);
   },
 
   // Reorder lessons
   async reorderLessons(courseId: number, lessonOrders: { id: number; order: number }[]): Promise<void> {
-    await api.patch(`/api/admin/lessons/course/${courseId}/reorder`, { lessonOrders });
+    await api.patch(`/admin/lessons/course/${courseId}/reorder`, { lessonOrders });
   },
 
   // Duplicate lesson
   async duplicateLesson(lessonId: number): Promise<AdminLesson> {
-    const response = await api.post(`/api/admin/lessons/${lessonId}/duplicate`);
+    const response = await api.post(`/admin/lessons/${lessonId}/duplicate`);
     return response.data;
   },
 
   // Search lessons
   async searchLessons(query: string): Promise<AdminLesson[]> {
-    const response = await api.get('/api/admin/lessons/search', { params: { q: query } });
+    const response = await api.get('/admin/lessons/search', { params: { q: query } });
     return response.data;
   },
 
@@ -202,7 +244,7 @@ export const adminLessonService = {
     viewsOverTime: Array<{ date: string; views: number }>;
     completionsOverTime: Array<{ date: string; completions: number }>;
   }> {
-    const response = await api.get(`/api/admin/lessons/${lessonId}/analytics`);
+    const response = await api.get(`/admin/lessons/${lessonId}/analytics`);
     return response.data;
   },
 };
